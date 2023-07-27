@@ -1,0 +1,103 @@
+<% var _ValidationList_ = $imports.getValidationListImport(formData) %>
+${{include 'base/base-doc-desc.art'}}
+<template>
+  <div class="app-container">
+
+    ${{set len_ = formData.length}}
+    <el-form ref="claFrom" :model="claForm" 
+      ${{if _ValidationList_.length}} :rules="rules" ${{/if}}
+      label-width="auto">
+      ${{if tableConfig.columnNum == 1}}
+        ${{include 'base/base-form-item.art'}}
+      ${{else}}
+        <% var tindex_ = 0; %>
+        ${{each formData}} 
+          ${{if ($value.spanNum||1) + tindex_ > tableConfig.columnNum}}
+            </el-row>
+            <% tindex_ = 0; %>
+          ${{/if}}
+          ${{if tindex_ == 0 }}
+            <el-row>
+          ${{/if}}
+            <el-col :span="${{24 / tableConfig.columnNum * ($value.spanNum||1) }}">
+              ${{if $value.isShow}}
+              <el-form-item prop="${{$value.column}}" label="${{$value.label}}">
+                ${{include 'base/form/'+$value.formItemType+'.art' $value}}
+              </el-form-item>
+              ${{/if}}
+            </el-col>
+            <% tindex_ = tindex_ + ($value.spanNum||1); %>
+          ${{if tindex_ ==  tableConfig.columnNum || $index == len_}}
+            </el-row>
+            <% tindex_ = 0; %>
+          ${{/if}}
+        ${{/each}}
+      ${{/if}}
+      
+    </el-form>
+
+  </div>
+</template>
+
+<script>
+<% var _CusPluginsList_ = $imports.getCusPluginsListImport(formData) %>
+import { ${{apiConfig.name}} } from '@/apis/${{apiConfig.fileName}}.js'
+${{each _CusPluginsList_}}import ${{$value.name}} from '${{$value.path}}'
+${{/each}}
+export default {
+  name: '${{$imports.comConfig.routerSuffix.lever2 + apiConfig.nameHump}}',
+  components: {
+    ${{each _CusPluginsList_}}${{$value.name}}${{if $index < _CusPluginsList_.length - 1}},${{/if}}${{/each}}
+  },
+  data () {
+    return {
+      claForm: {
+        ${{each formData}} ${{$value.column}}: ${{@ $value.formItemType =='select' ? "null" : "''"}} ${{if formData.length-1 != $index}},${{/if}} // ${{@ $value.label}}
+        ${{/each}}
+      },
+      ${{if _ValidationList_.length}}
+        rules:{
+          ${{include 'base/base-form-rule.art' _ValidationList_}}
+        },
+      ${{/if}}
+      ${{each formData}}
+      ${{if $value.formItemType =='select'}}
+      ${{$value.column}}Opts: [
+        {
+          value: null,
+          label: '全部'
+        }
+      ]${{if formData.length-1 != $index}},${{/if}}${{/if}}
+      ${{/each}}
+    }
+  },
+  computed: {},
+  watch: {},
+  mounted () {},
+  created () {},
+  methods: {
+    resetForm () {
+      this.$refs.claFrom.resetFields()
+    },
+    submitForm() {
+      this.$refs.claFrom.validate((valid) => {
+        if (valid) {
+          const _data = {
+            ...this.claForm
+          }
+          ${{apiConfig.name}}(_data).then(res => {
+            ${{if tableData[0] && tableData[0].column === null }} // ${{@ tableData[0].columnType}}  ${{@ tableData[0].other}}  ${{/if}}
+            console.log(res)
+
+          }).catch(() => {})
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped></style>

@@ -1,0 +1,7 @@
+<el-date-picker
+  v-model="claForm.${{column}}"
+  type="date"
+  value-format="yyyy-MM-dd"
+  placeholder=""
+  ${{@ opts.attr | getFormItemAttr}}
+/>

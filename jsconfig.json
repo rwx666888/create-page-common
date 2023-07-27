@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "noImplicitAny": false, // 关闭 TypeScript 编译器的类型检查
+    "module": "commonjs" // 指定生成哪个模块系统代码
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
