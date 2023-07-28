@@ -31,15 +31,16 @@ export default {
         fileDesc: ''
       },
       localProjectPath: '',
-      msgCache: []
+      msgCache: [],
+      isFilterTheList: false // 是否过滤列表
     }
   },
   methods: {
-    init (fn = (item) => true) {
+    initData (fn = (item) => true) {
       dbGet('cusCatalogDB').then(val => {
         if (val) {
           this.apiOpts = Object.keys(val.items)
-            .filter(f => { return fn(val.items[f]) })
+            .filter(f => { return !this.isFilterTheList ? true : fn(val.items[f]) })
             .map((v, k) => {
               const t_ = val.items[v]
               return {
@@ -302,6 +303,9 @@ export default {
       } else {
         return []
       }
+    },
+    filterTheListFn () {
+      this.init()
     }
 
   }

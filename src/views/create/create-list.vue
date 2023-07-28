@@ -19,6 +19,17 @@
               :value="item.value"
             />
           </el-select>
+          <el-tooltip
+            effect="dark"
+            content="启用过滤后，将会根据表单元素类型进行过滤，过滤条件请自行修改init方法，以匹配你的数据结构"
+            placement="top"
+          >
+            <el-checkbox
+              v-model="isFilterTheList"
+              style="margin-left:20px;"
+              @change="filterTheListFn"
+            >启用过滤</el-checkbox>
+          </el-tooltip>
         </div>
         <div class="form-right-box"><el-button
           :disabled="!curApi"
@@ -217,12 +228,15 @@ export default {
   computed: {},
   watch: {},
   mounted () {
-    this.init(item => {
-      return item.hasList
-    })
+    this.init()
   },
   created () {},
   methods: {
+    init () {
+      this.initData(item => {
+        return item.hasList
+      })
+    },
 
     toChoiceApiFn (val) {
       const Old_ = this.$options.data()
