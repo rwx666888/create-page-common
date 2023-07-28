@@ -54,7 +54,7 @@
     "chalk": "2.4.2",
     "chokidar": "2.1.5",
     "connect": "3.6.6",
-    "create-vue-page-npm": "^2.0.1",
+    "create-vue-page-npm": "^2.0.2",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-friendly-formatter": "^4.0.1",
