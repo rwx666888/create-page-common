@@ -11,7 +11,7 @@
         :rules="rules"
       >
         <el-form-item
-          label="catalog地址:"
+          label="swagger:"
           :prop="formData.docType"
           class="is-required"
         >
@@ -139,7 +139,7 @@ export default {
       rules: {
         cUrl: [
           {
-            required: true, message: '不能为空，格式：https://catalog.xxx/spec/content?id=xxxx&version=xxx-SNAPSHOT', trigger: 'blur'
+            required: true, message: '不能为空，格式：https://xx', trigger: 'blur'
           }
         ],
         localProjectPath: [
@@ -181,9 +181,11 @@ export default {
           let data_ = {}
           if (this.formData.docType === 'cUrl') {
             if (this.formData.cUrl) {
-              const res = await getCatalog(this.formData.cUrl).catch(_ => { return null })
+              let res = await getCatalog(this.formData.cUrl).catch(_ => { return null })
               if (res) {
-                console.log(res)
+                if (typeof res === 'object') {
+                  res = JSON.stringify(res)
+                }
                 data_ = com_.makeDataFn(res)
               }
             }
