@@ -1,0 +1,1 @@
+<el-checkbox v-model="claForm.${{column}}">${{label}}</el-checkbox>

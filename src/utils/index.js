@@ -353,3 +353,33 @@ export function isEmptyObject (obj) {
 export function isNumeric (value) {
   return !isNaN(parseFloat(value)) && isFinite(value)
 }
+
+/**
+ * 提取数字字典
+ * @param {string} text
+ * @param {string} type
+ * @returns { object | array}
+ * @example
+ *  上课状态 -1 待上课 0 上课中 1 已结束 2 已取消
+ *  结课状态 1，已结课 2，未结课
+ */
+export function extractDataDict (text, type = 'object') {
+  const data = {}
+  const pattern = /(-?\d+)\s*([^0-9\s]+)\s*/g
+  let match
+  while ((match = pattern.exec(text)) !== null) {
+    const value = match[2].trim().replace(/[,，；、|]/g, '')
+    const key = match[1].trim()
+    data[key] = value
+  }
+  if (type === 'object') {
+    return data
+  } else {
+    return Object.keys(data).map(key => {
+      return {
+        value: key,
+        label: data[key]
+      }
+    })
+  }
+}

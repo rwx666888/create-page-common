@@ -48,7 +48,7 @@ export default {
   },
   data () {
     return {
-      curComponent: 'SetCusDatePicker',
+      curComponent: 'SetEmpty',
       visible: false,
       title: '配置',
       rowData: {}, // 【原型链对象】，当前操作行的数据，直接修改原型链

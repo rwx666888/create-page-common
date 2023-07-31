@@ -106,7 +106,7 @@ module.exports = {
    * disabled : 在构造模板中，不可使用（暂不支持）的元素
    *   [undefined] : 不禁用, 默认值;
    *   [boolean] true : 全部禁用;
-   *   [string] 'list|form' : 只有字符串中完全匹配的条件禁用，例如：list 或 form 禁用;
+   *   [string] 正则表达式字符串: 只有字符串中完全匹配的条件禁用，例如：'list|form' 则表示为 list 或 form 禁用;
    * path : 可选，自定义组件的路径 例如：'@/components/cusDatePicker/index.vue'
    * valid : 必须，表单验证配置
    *  -- trigger: 必须，触发方式 'blur' 、'change' 等
@@ -154,7 +154,6 @@ module.exports = {
     {
       value: 'checkboxGroup',
       label: '多选框组',
-      disabled: true,
       valid: {
         trigger: 'change',
         type: 'array'
@@ -163,7 +162,6 @@ module.exports = {
     {
       value: 'checkbox',
       label: '多选框',
-      disabled: true,
       valid: {
         trigger: 'change'
       }

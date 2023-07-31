@@ -1,0 +1,6 @@
+<el-input
+  type="textarea"
+  :rows="3"
+  placeholder=""
+  v-model="claForm.${{column}}">
+</el-input>

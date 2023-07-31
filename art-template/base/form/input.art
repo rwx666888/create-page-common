@@ -1,5 +1,5 @@
 <el-input
-  ${{if columnType == 'integer'}} v-model.number="claForm.${{column}}" ${{else}} v-model="claForm.${{column}}" ${{/if}}
+  ${{if columnType == 'integer'}} v-model.number="claForm.${{column}}" ${{else}} v-model.trim="claForm.${{column}}" ${{/if}}
   placeholder="${{label}}"
   style="width:120px;"
   ${{@ opts.attr | getFormItemAttr}}
