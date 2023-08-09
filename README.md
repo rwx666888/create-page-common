@@ -152,11 +152,14 @@ npm run local
    * disabled : 在构造模板中，不可使用（暂不支持）的元素
    *   [undefined] : 不禁用, 默认值;
    *   [boolean] true : 全部禁用;
-   *   [string] 'list|form' : 只有字符串中完全匹配的条件禁用，例如：list 或 form 禁用;
+   *   [string] 只有完全匹配的才禁用，例如：'list|form' 则表示为 list 或 form 禁用;
    * path : 可选，自定义组件的路径 例如：'@/components/cusDatePicker/index.vue'
    * valid : 必须，表单验证配置
    *  -- trigger: 必须，触发方式 'blur' 、'change' 等
    *  -- type: 可选，数据类型 'string'(默认)、'date'、'array' 等
+   * dataSource : 可选，数据源配置，例如：下拉选择框的选项
+   *  -- dataType: 必须，数据格式，默认array，可选：array、object
+   *  -- default: 可选，数据源默认值，例如：下拉选择框的默认值 [{value: null, label: '全部'}] ; 如果没有对组件进行配置，则使用默认值
    */
   formItemOpts: [
     {
@@ -179,18 +182,26 @@ npm run local
       label: '下拉选择框',
       valid: {
         trigger: 'change'
+      },
+      dataSource: {
+        dataType: 'array',
+        default: [{ value: null, label: '全部' }]
       }
     },
     {
       value: 'radioGroup',
       label: '单选框组',
-      disabled: true,
+      disabled: 'list',
       valid: {
         trigger: 'change'
+      },
+      dataSource: {
+        dataType: 'array',
+        default: [{ value: '-1', label: '选项一' }, { value: '-2', label: '选项二' }]
       }
     },
     {
-      value: 'radio',
+      value: 'radio', // 暂不支持，因为基本没有单独使用单选框的场景
       label: '单选框',
       disabled: true,
       valid: {
@@ -200,16 +211,18 @@ npm run local
     {
       value: 'checkboxGroup',
       label: '多选框组',
-      disabled: true,
       valid: {
         trigger: 'change',
         type: 'array'
+      },
+      dataSource: {
+        dataType: 'array',
+        default: [{ value: '-1', label: '选项一' }, { value: '-2', label: '选项二' }]
       }
     },
     {
       value: 'checkbox',
       label: '多选框',
-      disabled: true,
       valid: {
         trigger: 'change'
       }
@@ -248,6 +261,7 @@ npm run local
     'table-row-danger'
   ]
 }
+
 ```
 
 ## 预设模板变量
@@ -300,12 +314,15 @@ npm run local
       opts: {
         range: range_, // 双日历配置项
         valid: null, // 表单验证配置项
-        attr: null // 表单配置属性
+        attr: { // 可选，表单组件配置属性， 默认值为 null, 有配置信息时为 {}
+          value, // 属性值
+          type // 属性值的类型，目前只对 'boolean','number','object' 类型做了转换处理
+        } 
       }, // 配置项
       needValidateOpts: false, // 是否需要验证配置项
       label,  // 示例：用户名
       labelDesc, // 字段描述 示例：用户名，英文字母
-      columnType, // 类型  字符串|数字
+      columnType, // 类型  string|integer|array
       formItemType, // 表单元素类型 input|dataPicker 对应配置文件中 formItemOpts
       range: { // 默认： null , 仅当是双日历表单组件时返回  
         f_: '__DateTime', // 所执行的自动匹配模式 ，注意仅 'startDateTime' 与 'endDateTime' 可自动匹配为 '__DateTime'；'startDateTime' 与 'dateTimeEnd' 不会自动匹配

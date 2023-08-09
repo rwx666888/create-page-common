@@ -201,7 +201,7 @@ export default {
     _fnMakeApiCfg (obj_) {
       // 过滤 vue页面的名称，过滤后名字可能为空，所以设置默认值 index
       const filterNameToPath = obj_.name.replace(/(^query|list$)/gi, '') || 'index'
-      // 过滤后的api名称，主要用于生成 view 页面 xxx-xxx-xxx
+      // 过滤后的api名称，主要用于生成 view 页面文件的名称 xxx-xxx-xxx
       const nameToPathfilter = filterNameToPath.replace(filterNameToPath.charAt(0), filterNameToPath.charAt(0).toLowerCase()).replace(/([A-Z])/g, '-$1').toLowerCase()
       // 连接符（-）的 api名称 xxx-xxx-xxx
       const nameToPath = obj_.name.replace(obj_.name.charAt(0), obj_.name.charAt(0).toLowerCase()).replace(/([A-Z])/g, '-$1').toLowerCase()
@@ -209,12 +209,12 @@ export default {
       return {
         name: obj_.name, // api名称
         nameHump: obj_.name.replace(obj_.name.charAt(0), obj_.name.charAt(0).toUpperCase()), // api名称, 大驼峰格式
-        nameToPathfilter, // 过滤后的api名称，主要用于生成 view 页面
+        nameToPathfilter, // 过滤后的api名称，主要用于生成 view 页面文件的名称
         nameToPath, // 连接符（-）的 api名称
         desc: obj_.summary, // 接口描述
         type: obj_.type === 'delete' ? 'del' : obj_.type, // 请求类型
         uri: obj_.uri, // 接口地址
-        fileName: curTagCode.replace(/([A-Z])/g, '-$1').toLowerCase(), // API 所属分组 tags,连接符（-）格式，用于生成api文件名
+        fileName: curTagCode.replace(/([A-Z])/g, '-$1').toLowerCase(), // API 所属分组 tags,连接符（-）格式，用于生成api文件的名称
         fileNameHump: curTagCode.replace(curTagCode.charAt(0), curTagCode.charAt(0).toUpperCase()), // API 所属分组 tags, 大驼峰格式
         fileDesc: obj_.tags.label // API 所属分组的描述
       }

@@ -37,9 +37,7 @@ import DataSourse from './part/dataSourse.vue'
 
 export default {
   name: 'SetInput',
-  components: {
-    DataSourse
-  },
+  components: { DataSourse },
   inject: ['itemSetIns'],
   data () {
     return {

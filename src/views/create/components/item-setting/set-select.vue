@@ -4,23 +4,17 @@
     :model="formData"
     label-width="120px"
   >
-    <el-form-item label="样式">
-      <el-radio v-model="formData._type_" label="normal">普通样式</el-radio>
-      <el-radio v-model="formData._type_" label="button">按钮样式</el-radio>
-    </el-form-item>
     <el-form-item label="">
-      <el-checkbox v-model="formData.border">是否显示边框 </el-checkbox>
+      <el-checkbox v-model="formData.multiple">是否多选 </el-checkbox>
+      <el-checkbox v-if="formData.multiple" v-model="formData['collapse-tags']">多选时是否按tag形式展示</el-checkbox>
     </el-form-item>
-    <el-form-item v-if="formData.border || formData._type_ == 'button'" label="尺寸">
-      <el-select v-model="formData.size" placeholder="请选择">
-        <el-option label="默认" value="" />
-        <el-option label="medium" value="medium" />
-        <el-option label="small" value="small" />
-        <el-option label="mini" value="mini" />
-      </el-select>
+    <el-form-item v-if="formData.multiple" label="最大可选个数">
+      <el-input v-model.number="formData['multiple-limit']" type="number" />
     </el-form-item>
     <el-form-item label="">
       <el-checkbox v-model="formData.disabled">是否禁用 </el-checkbox>
+      <el-checkbox v-model="formData.clearable">是否可清空 </el-checkbox>
+      <el-checkbox v-model="formData.filterable">是否可搜索 </el-checkbox>
     </el-form-item>
     <el-form-item label="数据源">
       <DataSourse
@@ -37,9 +31,7 @@ import DataSourse from './part/dataSourse.vue'
 
 export default {
   name: 'SetInput',
-  components: {
-    DataSourse
-  },
+  components: { DataSourse },
   inject: ['itemSetIns'],
   data () {
     return {
@@ -47,10 +39,12 @@ export default {
       tmpRowData: this.itemSetIns.tmpRowData,
       /* 注意以 '_'开头并且以 '_'结尾 （/^_[\w-]+_$/）的属性为私有属性，或临时变量，不会出现在模板属性过滤器 getFormItemAttr 中 */
       formData: {
-        _type_: 'normal',
+        'multiple-limit': 0, // 最大可选个数
+        multiple: false, // 是否多选
+        'collapse-tags': false, // 多选时是否按tag形式展示
+        clearable: false, // 是否可清空
+        filterable: false, // 是否可搜索
         disabled: false, // 是否禁用，建议使用组件的默认值
-        border: false, // 是否显示边框，建议使用组件的默认值
-        size: '', // 尺寸，建议使用组件的默认值
         _dataSource_: [], // 数据源，内置私有属性
         _dataSourceOpts_: {} // 数据源配置项
       },
@@ -59,10 +53,8 @@ export default {
   },
   computed: {},
   watch: {},
-  created () {},
-  mounted () {
-    this.init()
-  },
+  created () { this.init() },
+  mounted () { },
   methods: {
     init () {
       if (this.tmpRowData.opts.attr) {
@@ -85,8 +77,9 @@ export default {
       const tmp = {}
       const oldData = this.$options.data.call(this).formData
       // 只处理当前属性,忽略合并过来的已移除的历史属性与内置属性,忽略组件默认值的属性
-      if (!this.formData.border && this.formData._type_ !== 'button') {
-        delete oldData.size
+      if (!this.formData.multiple) {
+        delete oldData['collapse-tags']
+        delete oldData['multiple-limit']
       }
       Object.keys(oldData).forEach(k => {
         if (this.formData[k] !== oldData[k]) {

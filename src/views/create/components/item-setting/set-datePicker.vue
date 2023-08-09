@@ -69,7 +69,7 @@ export default {
       rowData: this.itemSetIns.rowData, // 【原型链对象】，当前操作行的数据，直接修改原型链
       tmpRowData: this.itemSetIns.tmpRowData,
       formData: {
-        type: 'daterange',
+        type: 'date',
         format: 'yyyy-MM-dd',
         'value-format': 'yyyy-MM-dd'
       },

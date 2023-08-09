@@ -357,29 +357,51 @@ export function isNumeric (value) {
 /**
  * 提取数字字典
  * @param {string} text
- * @param {string} type
+ * @param {string} type string | number
+ * @param {string} returnDataType object | array
  * @returns { object | array}
  * @example
  *  上课状态 -1 待上课 0 上课中 1 已结束 2 已取消
  *  结课状态 1，已结课 2，未结课
  */
-export function extractDataDict (text, type = 'object') {
+export function extractDataDict (text, type = 'string', returnDataType = 'object') {
   const data = {}
   const pattern = /(-?\d+)\s*([^0-9\s]+)\s*/g
   let match
   while ((match = pattern.exec(text)) !== null) {
-    const value = match[2].trim().replace(/[,，；、|]/g, '')
+    const value = match[2].trim().replace(/[,，；、:：|]/g, '')
     const key = match[1].trim()
     data[key] = value
   }
-  if (type === 'object') {
+  if (returnDataType === 'object') {
     return data
   } else {
     return Object.keys(data).map(key => {
       return {
-        value: key,
+        value: type === 'number' ? (Number(key) || key) : key,
         label: data[key]
       }
     })
+  }
+}
+
+// 获取变量类型，非严谨模式，注意数值型字符串为string类型
+export function getVariableType (variable) {
+  if (typeof variable === 'string') {
+    return 'string'
+  } else if (typeof variable === 'number') {
+    return 'number'
+  } else if (typeof variable === 'boolean') {
+    return 'boolean'
+  } else if (Array.isArray(variable)) {
+    return 'array'
+  } else if (typeof variable === 'object' && variable !== null) {
+    return 'object'
+  } else if (variable === null) {
+    return 'null'
+  } else if (typeof variable === 'undefined') {
+    return 'undefined'
+  } else {
+    return 'unknown'
   }
 }

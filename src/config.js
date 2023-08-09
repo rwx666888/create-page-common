@@ -106,11 +106,14 @@ module.exports = {
    * disabled : 在构造模板中，不可使用（暂不支持）的元素
    *   [undefined] : 不禁用, 默认值;
    *   [boolean] true : 全部禁用;
-   *   [string] 正则表达式字符串: 只有字符串中完全匹配的条件禁用，例如：'list|form' 则表示为 list 或 form 禁用;
+   *   [string] 只有完全匹配的才禁用，例如：'list|form' 则表示为 list 或 form 禁用;
    * path : 可选，自定义组件的路径 例如：'@/components/cusDatePicker/index.vue'
    * valid : 必须，表单验证配置
    *  -- trigger: 必须，触发方式 'blur' 、'change' 等
    *  -- type: 可选，数据类型 'string'(默认)、'date'、'array' 等
+   * dataSource : 可选，数据源配置，例如：下拉选择框的选项
+   *  -- dataType: 必须，数据格式，默认array，可选：array、object
+   *  -- default: 可选，数据源默认值，例如：下拉选择框的默认值 [{value: null, label: '全部'}] ; 如果没有对组件进行配置，则使用默认值
    */
   formItemOpts: [
     {
@@ -133,18 +136,26 @@ module.exports = {
       label: '下拉选择框',
       valid: {
         trigger: 'change'
+      },
+      dataSource: {
+        dataType: 'array',
+        default: [{ value: null, label: '全部' }]
       }
     },
     {
       value: 'radioGroup',
       label: '单选框组',
-      disabled: true,
+      disabled: 'list',
       valid: {
         trigger: 'change'
+      },
+      dataSource: {
+        dataType: 'array',
+        default: [{ value: '-1', label: '选项一' }, { value: '-2', label: '选项二' }]
       }
     },
     {
-      value: 'radio',
+      value: 'radio', // 暂不支持，因为基本没有单独使用单选框的场景
       label: '单选框',
       disabled: true,
       valid: {
@@ -157,6 +168,10 @@ module.exports = {
       valid: {
         trigger: 'change',
         type: 'array'
+      },
+      dataSource: {
+        dataType: 'array',
+        default: [{ value: '-1', label: '选项一' }, { value: '-2', label: '选项二' }]
       }
     },
     {

@@ -74,6 +74,7 @@ ${{include 'base/base-doc-desc.art'}}
 
 <script>
 <% var _CusPluginsList_ = $imports.getCusPluginsListImport(formData) %>
+
 import { ${{apiConfig.name}} } from '@/apis/${{apiConfig.fileName}}.js'
 import CmpTablePagination from '@/components/table-pagination/table-pagination.vue'
 ${{each _CusPluginsList_}}import ${{$value.name}} from '${{$value.path}}'
@@ -87,8 +88,7 @@ export default {
   data () {
     return {
       claForm: {
-        ${{each formData}} ${{$value.column}}: ${{@ $value.formItemType =='select' ? "null" : "''"}} ${{if formData.length-1 != $index}},${{/if}} // ${{@ $value.label}}
-        ${{/each}}
+        ${{include 'base/base-form-item-value.art' }}
       },
       tableData: { totalCount: 0, list: [] },
       pagination: {
@@ -97,17 +97,11 @@ export default {
         pageSize: 10
         // orderBy: '',
         // sort: ''
-      }
-      ${{each formData}}
-      ${{if $value.formItemType =='select'}},
-      // ${{$value.label}}
-      ${{$value.column}}Opts: [
-        {
-          value: null,
-          label: '全部'
-        }
-      ]${{/if}}
-      ${{/each}}
+      },
+      /* 组件数据源 */
+      ${{include 'base/base-plugins-data-source.art' }}
+      
+
     }
   },
   computed: {},

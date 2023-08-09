@@ -1,0 +1,5 @@
+<% var _pluginsDataSourceList_ = $imports.getPluginsDataSourceImport(formData) %>
+${{each _pluginsDataSourceList_}}
+// ${{$value.label}}
+${{$value.name}}:${{@ $value.data}}${{if _pluginsDataSourceList_.length-1 != $index}},${{/if}}
+${{/each}}

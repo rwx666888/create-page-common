@@ -50,6 +50,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'SetInput',
   components: {},

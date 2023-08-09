@@ -52,23 +52,16 @@ export default {
   data () {
     return {
       claForm: {
-        ${{each formData}} ${{$value.column}}: ${{@ $value.formItemType =='select' ? "null" : "''"}} ${{if formData.length-1 != $index}},${{/if}} // ${{@ $value.label}}
-        ${{/each}}
+        ${{include 'base/base-form-item-value.art' }}
       },
       ${{if _ValidationList_.length}}
         rules:{
           ${{include 'base/base-form-rule.art' _ValidationList_}}
         },
       ${{/if}}
-      ${{each formData}}
-      ${{if $value.formItemType =='select'}}
-      ${{$value.column}}Opts: [
-        {
-          value: null,
-          label: '全部'
-        }
-      ]${{if formData.length-1 != $index}},${{/if}}${{/if}}
-      ${{/each}}
+      /* 组件数据源 */
+      ${{include 'base/base-plugins-data-source.art' }}
+      
     }
   },
   computed: {},
