@@ -5,28 +5,15 @@
 </template>
 
 <script>
-import showdown from 'showdown'
-import hljs from 'highlight.js'
+
+// import hljs from 'highlight.js'
 import '@/styles/github-markdown.css'
-import 'highlight.js/styles/github.css'
+// import 'highlight.js/styles/github.css'
 import RM from '../../../README.md'
 // import { getComConfig } from '@/apis/create-page.js'
 export default {
   name: 'Help',
-  directives: {
-    highlight: function (el, binding) {
-      var converter = new showdown.Converter()
-      el.innerHTML = converter.makeHtml(binding.value)
-      setTimeout(() => {
-        // hljs.highlightBlock(el, { language: 'xml' })
-        document.querySelectorAll('pre > code').forEach((el2) => {
-          // hljs.highlightElement(el);
-          console.log(el2.innerHTML)
-        })
-      }, 500)
-    }
-
-  },
+  directives: { },
   components: {
   },
   data () {
@@ -49,12 +36,12 @@ export default {
       })
     }) */
     this.content = md_
-    this.$nextTick(_ => {
+    /* this.$nextTick(_ => {
       document.querySelectorAll('.t-wrap pre > code').forEach((el2) => {
         el2.classList.add('jsx')
         hljs.highlightBlock(el2)
       })
-    })
+    }) */
   },
   created () {
 
