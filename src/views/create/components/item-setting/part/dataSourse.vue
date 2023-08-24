@@ -12,7 +12,7 @@
       </el-radio-group> -->
       <el-popover
         v-model="dataSourceVisible"
-        placement="top-end"
+        placement="top-start"
         width="530"
       >
         <el-input
@@ -93,9 +93,12 @@ export default {
   },
   mounted () { },
   methods: {
-    init () {
-      if (!this.tmpRowData.opts.attr?._dataSourceOpts_?.dataSourceTmpStr && this.tmpRowData.labelDesc) {
+    init () { // 注意只处理初始化时的数据，用户设置后的数据优先级更高
+      if (!this.tmpRowData.opts.attr?._dataSourceOpts_?.dataSourceTmpStr && this.tmpRowData.labelDesc) { // 临时输入项
         this.dataSourceTmpStr = this.tmpRowData.labelDesc
+      }
+      if (!this.tmpRowData.opts.attr?._dataSourceOpts_?.dataSourceKeyType && this.tmpRowData.columnType === 'integer') { // 数值型
+        this.dataSourceKeyType = 'number'
       }
     },
     // 数据源

@@ -144,7 +144,7 @@ export default {
         this.$alert(`开始时间或结束时间不能为空`, '错误')
         return false
       }
-      if (this.tmpRowData.opts.range.isStart) {
+      if (this.tmpRowData.opts.range?.isStart) {
         // 组件配置属性
         this.rowData.opts.attr = {
           'format': this.formData.format,
@@ -209,20 +209,51 @@ export default {
       }
     },
     /**
-     * 重置组件配置
-     * @@param {Array} tableDataSearch 【原型链修改】
-     * @param {Object} formItemType 新的formItemType值
-     * @param {Object} row 【原型链修改】当前行数据
+     * 自动初始化配置项
+     * 【内置钩子，静态工具类】【原型链修改】
+     * 组件在被初始化前，会调用此方法，用于初始化配置项，此方法会在组件实例化前调用，所以无法访问组件实例，并且其中的 this 指向的是 methods 对象;
+     * 尽量不要在此方法中使用this,或不在当前实例中使用此方法，以免造成this指向错误
+     * 可访问的全局变量：
+     *  _$cusConfig$_ 配置项，对应config.js中的配置项
+     *  _$cusComponents$_ 组件列表，对应item-setting 目录下的组件列表；_$cusComponents$_['SetInput'] 为 SetInput 组件,注意不是组件实例
+     * @param {Object} row 当前操作行的数据 【原型链修改】
+     * @param {Array | false} tableDataSearch 当前操作行的数据 【原型链修改】,如果是false则表示只操作当前行的数据，不操作关联行的数据
      */
-    toResetFn (tableDataSearch, formItemType, row) {
-      console.log('---aaaa--', formItemType, row)
-      if (row.opts.range && formItemType !== 'cusDatePicker') {
+    __autoInitConfig (row, tableDataSearch = [], rangeObj = {}) {
+      if (!rangeObj) {
+        return false
+      }
+      const curRange_ = rangeObj[row.column] || null
+      row.isShow = (curRange_ ? (!!(curRange_.isDatePickerRange && curRange_.isStart)) : true)
+      row.opts.range = curRange_
+      if (tableDataSearch && curRange_) {
+        const toObj_ = com_.getRowFormListByColname(tableDataSearch, 'column', row.opts.range.to_)
+        if (toObj_) {
+          const toRange_ = rangeObj[toObj_.column] || null
+          toObj_.opts.range = toRange_
+          toObj_.opts.attr = null
+          toObj_.formItemType = 'cusDatePicker'
+          toObj_.isShow = (toRange_ ? (!!(toRange_.isDatePickerRange && toRange_.isStart)) : true)
+        }
+      }
+    },
+    /**
+     * 重置关联数据的配置项
+     * 注意当前操作行的数据，或默认自动重置不需要在这里处理(组件私有数据除外)，这里只处理关联数据的配置项
+     * 例如 开始时间与结束时间的关联，开始时间的配置项修改后，同时需要在这里重置结束时间的配置项
+     * @param {Object} row 【原型链修改】当前行数据
+     * @param {Array} tableDataSearch 【原型链修改】
+     * @param {Object} newFormItemType 新的formItemType值
+     */
+    __toResetFn (row, tableDataSearch = [], newFormItemType) {
+      console.log('---aaaa--', newFormItemType, row)
+      if (row.opts.range && newFormItemType !== 'cusDatePicker') {
         const toObj_ = com_.getRowFormListByColname(tableDataSearch, 'column', row.opts.range.to_)
         console.log('fnSelFormItemType--', toObj_)
         if (toObj_) {
           toObj_.opts.range = null
           toObj_.opts.attr = null
-          toObj_.formItemType = formItemType
+          toObj_.formItemType = newFormItemType
           toObj_.isShow = true
         }
         row.opts.range = null

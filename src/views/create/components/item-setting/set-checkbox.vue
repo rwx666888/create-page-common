@@ -34,7 +34,7 @@
 <script>
 
 export default {
-  name: 'SetInput',
+  name: 'SetCheckbox',
   components: {},
   inject: ['itemSetIns'],
   data () {

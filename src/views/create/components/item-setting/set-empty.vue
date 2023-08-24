@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'Xxx',
+  name: 'SetEmpty',
   components: {},
   data () {
     return {}

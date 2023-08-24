@@ -314,10 +314,7 @@ npm run local
       opts: {
         range: range_, // 双日历配置项
         valid: null, // 表单验证配置项
-        attr: { // 可选，表单组件配置属性， 默认值为 null, 有配置信息时为 {}
-          value, // 属性值
-          type // 属性值的类型，目前只对 'boolean','number','object' 类型做了转换处理
-        } 
+        attr: null // 可选，表单组件配置属性
       }, // 配置项
       needValidateOpts: false, // 是否需要验证配置项
       label,  // 示例：用户名

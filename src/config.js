@@ -213,5 +213,9 @@ module.exports = {
     'table-row-brand',
     'table-row-warning',
     'table-row-danger'
-  ]
+  ],
+  formFieldDetection: { // 处理方法在 mixins/create.js -> formItemTypeChoice方法中
+    findDate: true, // 是否检测日期，并适配为日期组件
+    findArray: true // 是否检测数组，并适配为下拉多选框
+  }
 }

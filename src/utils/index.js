@@ -378,7 +378,7 @@ export function extractDataDict (text, type = 'string', returnDataType = 'object
   } else {
     return Object.keys(data).map(key => {
       return {
-        value: type === 'number' ? (Number(key) || key) : key,
+        value: type === 'number' ? (Number(key) || 0) : key,
         label: data[key]
       }
     })

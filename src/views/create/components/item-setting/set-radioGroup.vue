@@ -36,7 +36,7 @@
 import DataSourse from './part/dataSourse.vue'
 
 export default {
-  name: 'SetInput',
+  name: 'SetRadioGroup',
   components: { DataSourse },
   inject: ['itemSetIns'],
   data () {

@@ -4,7 +4,7 @@ import config_ from '@/config.js'
 import Sortable from 'sortablejs'
 const com_ = require('create-vue-page-npm').createApi
 
-const rowbg_ = {}
+let rowbg_ = {}
 export default {
   data () {
     return {
@@ -18,6 +18,8 @@ export default {
       querysInPath: [],
       // 临时存储 序列化后的 CatalogData
       tempCatalogData: {},
+      // 临时存储 日期范围组件配置项
+      theDateRangeObj: {},
       tableConfig: {
         columnNum: 1 // 列数
       },
@@ -66,15 +68,19 @@ export default {
       return typeof filterStr === 'undefined' ? false : (typeof filterStr === 'string' ? (new RegExp('^(' + filterStr + ')$').test(mode)) : !!filterStr)
     },
     // 根据字段名称尝试匹配表单元素类型
-    formItemTypeChoice (str, range) {
-      str = str || ''
-      if (/(date|time)/i.test(str)) { // 日期或时间，优选日期
-        if (range && range.isDatePickerRange) { // 双日历
+    formItemTypeChoice (row) {
+      const name_ = row.name || ''
+      if (config_.formFieldDetection.findDate && /(date|time)/i.test(name_)) { // 日期或时间，优选日期
+        if (this.theDateRangeObj[name_] && this.theDateRangeObj[name_].isDatePickerRange) { // 双日历
           return 'cusDatePicker'
         } else {
           return 'datePicker'
         }
       }
+      if (config_.formFieldDetection.findArray && row.type === 'array') { // 数组，优选多选框
+        return 'select'
+      }
+
       return 'input'
     },
     // 尝试过滤 label 名称
@@ -161,16 +167,31 @@ export default {
       }
       return c_
     },
+    /**
+     *  获取自定义组件,根据组件类型
+     * @param {string} formItemType
+     * @return {Object} 组件对象, 非组件实例，找不到返回 null
+     */
+    getCusComptByFormItemType (formItemType) {
+      const n_ = 'Set' + (formItemType.charAt(0).toUpperCase() + formItemType.slice(1))
+      return _$cusComponents$_[n_] || null
+    },
     // 组件类型发生变化
     fnSelFormItemType (val, row) {
       const _oldFormItemType = row.formItemType
-      const resetFn = () => {
-        // 尝试重置组件的关联设置
-        const n_ = 'Set' + (_oldFormItemType.charAt(0).toUpperCase() + _oldFormItemType.slice(1))
-        if (_$cusComponents$_[n_] && _$cusComponents$_[n_].methods.toResetFn) {
-          _$cusComponents$_[n_].methods.toResetFn(this.tableDataSearch, val, row)
+      const _resetFn_ = () => { // 尝试重置旧组件的关联设置
+        const _oldFormItemComp = this.getCusComptByFormItemType(_oldFormItemType)
+        if (_oldFormItemComp && _oldFormItemComp.methods.__toResetFn) {
+          _oldFormItemComp.methods.__toResetFn(row, this.tableDataSearch, val)
         }
       }
+      const _autoInitFn_ = () => { // 尝试自动初始化新组件的关联设置
+        const _newFormItemComp = this.getCusComptByFormItemType(val)
+        if (_newFormItemComp && _newFormItemComp.methods.__autoInitConfig) {
+          _newFormItemComp.methods.__autoInitConfig(row, this.tableDataSearch, this.theDateRangeObj)
+        }
+      }
+
       if (row.opts.attr) {
         this.$confirm('当前组件存在配置信息，变更将导致配置信息重置, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -178,15 +199,19 @@ export default {
           type: 'warning',
           callback: (action, instance) => {
             if (action === 'confirm') {
+              _resetFn_()
               row.formItemType = val
               row.opts.attr = null
-              resetFn()
+              row.opts.range = null
+              _autoInitFn_()
             }
           }
         })
       } else {
+        _resetFn_()
         row.formItemType = val
-        resetFn()
+        row.opts.range = null
+        _autoInitFn_()
       }
     },
     fnValidSearch (list) {
@@ -260,6 +285,7 @@ export default {
     },
     // 构造 tableDataSearch
     _fnMakeTableDataSearch (obj_, isStatic = false) {
+      rowbg_ = {}
       if (obj_.req.body && obj_.req.body.length) {
         // 从请求参数中过滤出 inPath 的参数
         this.querysInPath = obj_.req.body.filter(qi => {
@@ -269,25 +295,20 @@ export default {
         const fArr_ = obj_.req.body.filter(qf => {
           return !(config_.pageListParams.includes(qf.name) || qf.inPath)
         })
-        let theRangeObj_ = {}
-        if (!isStatic) { // 非静态表单
-          const dataOrTimeArr = fArr_.filter(fd => {
-            return /(date|time)/i.test(fd.name)
-          })
-          // 获取双日历配置项
-          theRangeObj_ = com_.getDateTimeRangeOpt(dataOrTimeArr, 'name', config_.formItemCig.dataTimeRangeRegExp, config_.formItemCig.isStartRegExp)
-        }
+        // 从请求参数中过滤出日期或时间的参数
+        const dataOrTimeArr = fArr_.filter(fd => {
+          return /(date|time)/i.test(fd.name)
+        })
+        // 获取双日历配置项
+        this.theDateRangeObj = com_.getDateTimeRangeOpt(dataOrTimeArr, 'name', config_.formItemCig.dataTimeRangeRegExp, config_.formItemCig.isStartRegExp)
+
         return fArr_.map(qn => {
-          let range_ = null
-          if (!isStatic) {
-            range_ = theRangeObj_[qn.name] || null
-          }
           // 生成表单项
-          return {
+          const row_ = {
             column: qn.name,
-            isShow: (range_ ? (!!(range_.isDatePickerRange && range_.isStart)) : true),
+            isShow: true,
             opts: {
-              range: range_, // 双日历配置项
+              range: null, // 双日历配置项
               valid: null, // 表单验证配置项
               attr: null // 表单配置属性
             }, // 配置项
@@ -295,10 +316,17 @@ export default {
             label: this.filterColumnLable(qn.description),
             labelDesc: qn.description,
             columnType: qn.type,
-            formItemType: !isStatic ? this.formItemTypeChoice(qn.name, range_) : 'input',
+            formItemType: !isStatic ? this.formItemTypeChoice(qn) : 'input',
             paramsInPath: qn.inPath || false,
             spanNum: 1
           }
+          // 自动适配表单元素配置项
+          const thatApi_ = this.getCusComptByFormItemType(row_.formItemType)
+          if (thatApi_ && thatApi_.methods.__autoInitConfig) {
+            thatApi_.methods.__autoInitConfig(row_, false, this.theDateRangeObj)
+          }
+
+          return row_
         })
       } else {
         return []

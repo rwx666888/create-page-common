@@ -36,7 +36,7 @@
 import DataSourse from './part/dataSourse.vue'
 
 export default {
-  name: 'SetInput',
+  name: 'SetCheckboxGroup',
   components: {
     DataSourse
   },

@@ -11,6 +11,7 @@ module.exports = {
     arguments: true,
     $: true,
     _$cusComponents$_: true,
+    _$cusConfig$_: true,
     process: true,
     __dirname: true
   },

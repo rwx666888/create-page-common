@@ -60,7 +60,7 @@
 <script>
 
 export default {
-  name: 'SetCusDatePicker',
+  name: 'SetDatePicker',
   components: {},
   props: { },
   inject: ['itemSetIns'],
