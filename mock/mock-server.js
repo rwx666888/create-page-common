@@ -4,7 +4,7 @@
  * 2、添加监控路由配置文件自动注入功能，自动加载 /mock/json 下的路由配置文件
  */
 const chokidar = require('chokidar')
-const bodyParser = require('body-parser')
+const express = require('express')
 const chalk = require('chalk')
 const path = require('path')
 // 【重点】 require.context 在此不可使用，所以显式注入进来
@@ -84,8 +84,8 @@ module.exports = app => {
   // parse app.body
   // https://expressjs.com/en/4x/api.html#req.body
   // 【重点】只对mock-server路由生效，否则与SSO冲突
-  app.use(process.env.VUE_APP_MOCK_SERVER, bodyParser.json())
-  app.use(process.env.VUE_APP_MOCK_SERVER, bodyParser.urlencoded({
+  app.use(process.env.VUE_APP_MOCK_SERVER, express.json())
+  app.use(process.env.VUE_APP_MOCK_SERVER, express.urlencoded({
     extended: true
   }))
 

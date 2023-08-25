@@ -65,6 +65,8 @@ const makeDemoMockData = (count) => {
         string4: '@ctitle(3, 5)',
         string5: '@ctitle(3, 5)',
         randomStr: '@string("lower", 1, 5)',
+        demoSex1: '@cword("012", 1)',
+        demoEdu1: '@cword("0123", 1)',
         emptyArray: [],
         emptyObject: {}
       })
@@ -146,15 +148,17 @@ function demoFnMakeListPageData (key, query = {}) {
   const tmpParams = Object.keys(query_).filter(key => {
     return ![
       'currentPage', 'pageSize'
-    ].includes(key) && query_[key]
+    ].includes(key) && (query_[key] !== '' && query_[key] !== null && query_[key] !== undefined && (!Array.isArray(query_[key]) || query_[key].length > 0))
   })
-  console.log('tmpParams: ', tmpParams)
+  console.log('tmpParams: ', tmpParams, query)
 
   // 过滤数据 模拟搜索
   const mockList = demoList.filter((item, index) => {
     return !tmpParams.some(key => {
-      if (item[obj[key].target].indexOf(query_[key]) < 0) {
-        return true
+      if (Array.isArray(query_[key])) {
+        return !query_[key].includes(item[obj[key].target])
+      } else {
+        return item[obj[key].target].toString().indexOf(query_[key]) < 0
       }
     })
   })

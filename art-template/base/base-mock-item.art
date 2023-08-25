@@ -11,7 +11,7 @@ ${{if  templateType == 'listPage'}}
       demo.__cacheKey__['${{apiConfig.name}}'] = { ...tobj }
     }
 
-    return demo.demoFnMakeListPageData('${{apiConfig.name}}', config.query)
+    return demo.demoFnMakeListPageData('${{apiConfig.name}}', Object.assign({}, config.body, config.query, config.params))
   }
 }
 ${{else if  templateType == 'infoPage' || templateType == 'infoDialog'}}
