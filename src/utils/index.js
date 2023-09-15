@@ -366,9 +366,13 @@ export function isNumeric (value) {
  */
 export function extractDataDict (text, type = 'string', returnDataType = 'object') {
   const data = {}
-  const pattern = /(-?\d+)\s*([^0-9\s]+)\s*/g
+  let findPattern = /([-\w]+)\s*[:：]\s*([-\w\u2E80-\u9FFF]+)/g // 匹配 【数字字母 + 冒号 + 字符串】的数据结构
+  const findState = text.match(findPattern)
+  if (!findState || findState.length < 2) { //
+    findPattern = /(-?\d+)\s*([^0-9\s]+)\s*/g // 匹配【数字 + 空格 + 非数字】的数据结构
+  }
   let match
-  while ((match = pattern.exec(text)) !== null) {
+  while ((match = findPattern.exec(text)) !== null) {
     const value = match[2].trim().replace(/[,，；、:：|]/g, '')
     const key = match[1].trim()
     data[key] = value
