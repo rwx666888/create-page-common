@@ -1,7 +1,9 @@
 
-import { get as dbGet } from 'idb-keyval'
+import { dbGet, addOrUpdateData, getDataByProjectApiVersion, delByProjectApiNotVer } from '@/utils/db.js'
 import config_ from '@/config.js'
 import Sortable from 'sortablejs'
+import { isEmptyObject } from '@/utils/index.js'
+
 const com_ = require('create-vue-page-npm').createApi
 
 let rowbg_ = {}
@@ -20,8 +22,10 @@ export default {
       tempCatalogData: {},
       // 临时存储 日期范围组件配置项
       theDateRangeObj: {},
-      tableConfig: {
-        columnNum: 1 // 列数
+      otherConfig: {
+        columnNum: 1, // 列数
+        type: 'page', // 类型 page | dialog
+        __path: '' // 文件生成路径
       },
       apiConfig: {
         name: '',
@@ -32,7 +36,8 @@ export default {
         fileName: '',
         fileDesc: ''
       },
-      localProjectPath: '',
+      localProjectPath: '', // 本地项目路径
+      curApiVersion: '', // API 文档版本
       msgCache: [],
       isFilterTheList: false // 是否过滤列表
     }
@@ -54,6 +59,7 @@ export default {
           this.tempCatalogData = val.items
           console.log(JSON.parse(JSON.stringify(val)))
           this.localProjectPath = val.project.pjtPath
+          this.curApiVersion = val.info.version
         } else {
           this.$alert('读取离线数据失败，请先初始化项目信息！', '错误！', {
             confirmButtonText: '去初始化',
@@ -64,10 +70,61 @@ export default {
         }
       })
     },
+    async toChoiceApiFn (val) {
+      this.resetData()
+
+      if (val) {
+        let catchData_ = null
+        if (!config_.cache.disabled) { // 开启缓存
+          catchData_ = await getDataByProjectApiVersion(this.localProjectPath, val, this.curApiVersion)
+          console.log('catchData_', catchData_)
+        }
+        if (catchData_) { // 存在缓存数据
+          this.resetData(catchData_)
+        } else {
+          const obj_ = this.tempCatalogData[val]
+          console.log('--', obj_, val)
+
+          this.apiConfig = this._fnMakeApiCfg(obj_)
+          console.log(' this.apiConfig', this.apiConfig)
+
+          this.tableData = this._fnMakeTableData(obj_)
+
+          this.tableDataSearch = this._fnMakeTableDataSearch(obj_)
+        }
+
+        setTimeout(() => {
+          this.fnDelOutDateCache() // 删除过期的缓存数据
+        }, 0)
+
+        this.$nextTick(() => {
+          this.rowDrop()
+        })
+      }
+    },
+    // 重置数据项
+    resetData (newData) {
+      if (!isEmptyObject(newData)) {
+        const arr_ = ['formItemOpts', 'apiOpts', 'tempCatalogData', 'localProjectPath', 'curApiVersion', 'msgCache']
+        for (const key in newData) {
+          if (Object.prototype.hasOwnProperty.call(this.$data, key) && !arr_.includes(key)) {
+            this.$data[key] = newData[key]
+          }
+        }
+      } else {
+        const Old_ = this.$options.data()
+        this.tableData = Old_.tableData
+        this.tableDataSearch = Old_.tableDataSearch
+        this.apiConfig = Old_.apiConfig
+        this.otherConfig = Old_.otherConfig
+        this.querysInPath = Old_.querysInPath
+        this.theDateRangeObj = Old_.theDateRangeObj
+      }
+    },
     filterOptsFn (filterStr, mode = '') {
       return typeof filterStr === 'undefined' ? false : (typeof filterStr === 'string' ? (new RegExp('^(' + filterStr + ')$').test(mode)) : !!filterStr)
     },
-    // 根据字段名称尝试匹配表单元素类型
+    // 根据字段名称及类型尝试匹配表单元素类型
     formItemTypeChoice (row) {
       const name_ = row.name || ''
       if (config_.formFieldDetection.findDate && /(date|time)/i.test(name_)) { // 日期或时间，优选日期
@@ -115,10 +172,9 @@ export default {
         this.msgCache.forEach(n => {
           try {
             n.close()
-          } catch (e) {
-            // TODO handle the exception
-          }
+          } catch (e) { }
         })
+        this.msgCache = []
       }
       if (msgObj) {
         Object.keys(msgObj).forEach((k, i) => {
@@ -334,6 +390,35 @@ export default {
     },
     filterTheListFn () {
       this.init()
+    },
+    // 写入操作数据
+    fnWriteOptData () {
+      if (config_.cache.disabled) {
+        return false
+      }
+      const data_ = {
+        ...this.$data
+      }
+      console.log('data_', data_)
+      if (!data_.localProjectPath || !data_.curApi || !data_.curApiVersion) {
+        return false
+      }
+      try {
+        addOrUpdateData(data_)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    // 删除过期的缓存数据（如果有），当前项目、当前api、不等于当前版本的数据
+    fnDelOutDateCache () {
+      if (config_.cache.disabled) {
+        return false
+      }
+      if (this.localProjectPath && this.curApi && this.curApiVersion) {
+        try {
+          delByProjectApiNotVer(this.localProjectPath, this.curApi, this.curApiVersion)
+        } catch (error) { }
+      }
     }
 
   }

@@ -30,6 +30,7 @@
               @change="filterTheListFn"
             >启用过滤</el-checkbox>
           </el-tooltip>
+
         </div>
         <div class="form-right-box"><el-button
           :disabled="!curApi"
@@ -45,7 +46,7 @@
         <span>检索条件</span>
         <div style="float: right;">
           展现类型：<el-select
-            v-model="tableConfig.type"
+            v-model="otherConfig.type"
             size="mini"
             style="width: 100px;"
           >
@@ -101,7 +102,7 @@
         <div style="float: right;">
           列数：
           <el-select
-            v-model="tableConfig.columnNum"
+            v-model="otherConfig.columnNum"
             style="margin-right: 20px; width: 80px;"
             size="mini"
             @change="changeColumnNumFn"
@@ -113,8 +114,8 @@
               :value="item"
             />
           </el-select>
-          <el-checkbox v-model="tableConfig.showColon">显示冒号</el-checkbox>
-          <el-checkbox v-model="tableConfig.showBorder">显示边框</el-checkbox>
+          <el-checkbox v-model="otherConfig.showColon">显示冒号</el-checkbox>
+          <el-checkbox v-model="otherConfig.showBorder">显示边框</el-checkbox>
         </div>
       </div>
       <el-table
@@ -163,7 +164,7 @@
               v-model="scope.row.spanNum"
             >
               <el-option
-                v-for="item in tableConfig.columnNum"
+                v-for="item in otherConfig.columnNum"
                 :key="item"
                 :label="item"
                 :value="item"
@@ -178,7 +179,7 @@
 </template>
 
 <script>
-import { toCreatePage, toCreateDialog } from '@/apis/create-page.js'
+import { toCreatePage } from '@/apis/create-page.js'
 import createMixin from '@/mixins/create.js'
 
 export default {
@@ -188,7 +189,7 @@ export default {
   mixins: [createMixin],
   data () {
     return {
-      tableConfig: {
+      otherConfig: {
         showColon: false, // 显示冒号
         showBorder: true, // 显示边框
         columnNum: 3, // 列数
@@ -207,41 +208,23 @@ export default {
       this.initData(item => { return !item.hasList && (item.res?.dataFormat === 'array' || item.res?.dataFormat === 'object') })
     },
 
-    toChoiceApiFn (val) {
-      const Old_ = this.$options.data()
-      this.tableData = Old_.tableData
-      this.tableDataSearch = Old_.tableDataSearch
-      this.apiConfig = Old_.apiConfig
-      if (val) {
-        const obj_ = this.tempCatalogData[val]
-        console.log('--', obj_, val)
-
-        this.apiConfig = this._fnMakeApiCfg(obj_)
-        console.log(' this.apiConfig', this.apiConfig)
-
-        this.tableData = this._fnMakeTableData(obj_)
-
-        this.tableDataSearch = this._fnMakeTableDataSearch(obj_)
-
-        this.$nextTick(() => {
-          this.rowDrop()
-        })
-      }
-    },
-
     toCreateFn () {
-      (this.tableConfig.type === 'page' ? toCreatePage : toCreateDialog)({
+      const data_ = {
         rootPath: this.localProjectPath,
-        templateType: this.tableConfig.type === 'page' ? 'infoPage' : 'infoDialog',
+        templateType: this.otherConfig.type === 'page' ? 'infoPage' : 'infoDialog',
         formData: JSON.parse(JSON.stringify(this.tableDataSearch)),
         tableData: JSON.parse(JSON.stringify(this.tableData)),
-        tableConfig: JSON.parse(JSON.stringify(this.tableConfig)),
+        otherConfig: JSON.parse(JSON.stringify(this.otherConfig)),
         apiConfig: JSON.parse(JSON.stringify(this.apiConfig)),
         querysInPath: JSON.parse(JSON.stringify(this.querysInPath))
-      }).then(resc => {
+      }
+
+      toCreatePage(data_).then(resc => {
         console.log('resc', resc)
         this.showMsgFn(resc)
       })
+
+      this.fnWriteOptData() // 写入操作记录
     },
     changeColumnNumFn () {
       this.tableData.forEach(item => {

@@ -24,6 +24,7 @@ html {
 
 #app {
   height: 100%;
+
   .main-container {
     background: #f5f5f5;
   }
@@ -207,7 +208,9 @@ aside {
     }
   }
 }
+
 .cus-nowrap {
+
   .el-table,
   &.el-table {
     .cell {
@@ -219,14 +222,17 @@ aside {
 // 自定义 搜索表单 布局
 .form-container {
   display: flex;
+
   .form-left-box {
     flex: 1 1 0%;
   }
+
   .form-right-box {
-    padding-left: 30px;
+    padding-left: 20px;
     text-align: right;
   }
 }
+
 .el-form--inline .form-container .form-left-box .el-form-item {
   margin-right: 20px;
 }
@@ -238,24 +244,30 @@ aside {
   vertical-align: middle;
   cursor: pointer;
 }
+
 .table-row-success td {
   background-color: rgb(225, 243, 216) !important;
 }
+
 .table-row-brand td {
   background-color: rgb(198, 226, 255) !important;
 }
+
 .table-row-warning td {
   background-color: rgb(250, 236, 216) !important;
 }
+
 .table-row-danger td {
   background-color: rgb(253, 226, 226) !important;
 }
 
 /* 扩展全局样式 */
 .el-input {
+
   .el-input-group__append,
   .el-input-group__prepend {
     .el-select.cus-allowed {
+
       .el-input__inner,
       .el-input__icon {
         cursor: pointer;

@@ -345,10 +345,11 @@ npm run local
       alignType // 列文本对齐方式 ，默认数字居中，文本居左；参照配置文件中 listPage 的配置
     }
   ],
-  tableConfig: { // 列表页全局配置
+  otherConfig: { // 额外的扩展配置
     showBtnCol: false, // 显示按钮列
     showNumCol: true, // 显示序号列
     showFormRightBtns: false // 显示表单右侧按钮区域
+    。。。
   },
   apiConfig, // 参照 模板预设变量中 《API》的说明 
 }

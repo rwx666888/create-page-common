@@ -46,7 +46,7 @@
         <div style="float: right;">
           列数：
           <el-select
-            v-model="tableConfig.columnNum"
+            v-model="otherConfig.columnNum"
             style="margin-right: 20px; width: 80px;"
             size="mini"
             @change="changeColumnNumFn"
@@ -111,7 +111,7 @@
               v-model="scope.row.spanNum"
             >
               <el-option
-                v-for="item in tableConfig.columnNum"
+                v-for="item in otherConfig.columnNum"
                 :key="item"
                 :label="item"
                 :value="item"
@@ -175,27 +175,6 @@ export default {
       this.initData(item => { return item.res?.dataFormat === 'boolean' })
     },
 
-    toChoiceApiFn (val) {
-      const Old_ = this.$options.data()
-      this.tableData = Old_.tableData
-      this.tableDataSearch = Old_.tableDataSearch
-      this.apiConfig = Old_.apiConfig
-      if (val) {
-        const obj_ = this.tempCatalogData[val]
-        console.log('--', obj_, val)
-
-        this.apiConfig = this._fnMakeApiCfg(obj_)
-
-        this.tableData = this._fnMakeTableData(obj_)
-
-        this.tableDataSearch = this._fnMakeTableDataSearch(obj_)
-
-        this.$nextTick(() => {
-          this.rowDrop()
-        })
-      }
-    },
-
     toCreateFn () {
       if (!this.fnValidSearch(this.tableDataSearch)) {
         return false
@@ -205,13 +184,14 @@ export default {
         templateType: 'formPage',
         formData: JSON.parse(JSON.stringify(this.tableDataSearch)),
         tableData: JSON.parse(JSON.stringify(this.tableData)),
-        tableConfig: JSON.parse(JSON.stringify(this.tableConfig)),
+        otherConfig: JSON.parse(JSON.stringify(this.otherConfig)),
         apiConfig: JSON.parse(JSON.stringify(this.apiConfig)),
         querysInPath: JSON.parse(JSON.stringify(this.querysInPath))
       }).then(resc => {
         console.log('resc', resc)
         this.showMsgFn(resc)
       })
+      this.fnWriteOptData() // 写入操作记录
     },
     changeColumnNumFn () {
       this.tableDataSearch.forEach(item => {

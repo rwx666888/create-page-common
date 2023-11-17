@@ -99,10 +99,10 @@
 import {
   getCatalog, getProjectInfo
 } from '../../apis/create-page.js'
-import {
-  set as dbSet, get as dbGet, del as dbDel
-} from 'idb-keyval'
+
 import { isEmptyObject } from '@/utils/index.js'
+
+import { dbSet, dbDel, dbGet } from '@/utils/db.js'
 
 const com_ = require('create-vue-page-npm').createApi
 

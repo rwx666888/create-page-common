@@ -68,6 +68,7 @@ export default {
     return {
       rowData: this.itemSetIns.rowData, // 【原型链对象】，当前操作行的数据，直接修改原型链
       tmpRowData: this.itemSetIns.tmpRowData,
+      /* 注意以 '_'开头并且以 '_'结尾 （/^_[\w-]+_$/）的属性为私有属性，或临时变量，不会出现在模板属性过滤器 getFormItemAttr 中 */
       formData: {
         type: 'date',
         format: 'yyyy-MM-dd',

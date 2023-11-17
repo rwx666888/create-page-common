@@ -23,123 +23,14 @@ module.exports = [
     url: '/toCreatePage',
     type: 'post',
     response: (req, res) => {
-      const flag = nodeFileApi.checkRootDir(req.body.rootPath)
-      if (flag) { //
-        const apiCig_ = req.body.apiConfig
-        console.log('--apiConfig--', apiCig_)
-        if (comConfig_.makeFile.isMakeMock) { // 是否生成mock文件
-          try {
-            nodeFileApi.makeMockfile(req.body)
-          } catch (e) {
-            console.log('--create mock err--\n', e)
-          }
-        }
-        // 按 API 、VIEW 、Router 的顺序调用
-        let d_ = null
-        if (comConfig_.makeFile.isMakeApi) { // 是否生成api文件
-          try {
-            d_ = nodeFileApi.makeApifile(req.body)
-          } catch (e) {
-            d_ = {
-              code: 0, msg: `API创建错误，详情请查看控制台日志`
-            }
-            console.log('--create API err--\n', e)
-          }
-        }
-        let d2_ = null
-        if (comConfig_.makeFile.isMakeView) { // 是否生成视图文件
-          try {
-            d2_ = nodeFileApi.makeViewfile(req.body)
-          } catch (e) {
-            d2_ = {
-              code: 0, msg: `页面模板解析错误，详情请查看控制台日志`
-            }
-            console.log('--create view err--\n', e)
-          }
-        }
-
-        /* const routerData = {
-          lever1Path: apiCig_.fileName,
-          lever1PageName: apiCig_.fileDesc,
-          lever1RouterName: comConfig_.routerSuffix.lever1 + apiCig_.fileNameHump,
-          lever2Path: apiCig_.nameToPath,
-          filePath: apiCig_.fileName + comConfig_.template[req.body.templateType].dirSuffix + '/' + apiCig_.nameToPathfilter + comConfig_.template[req.body.templateType].suffix,
-          lever2RouterName: comConfig_.routerSuffix.lever2 + apiCig_.nameHump,
-          lever2PageName: apiCig_.desc,
-          rootPath: req.body.rootPath
-        } */
-        const routerData = nodeFileApi.makeRouterData(req.body)
-
-        console.log('routerData', routerData)
-
-        let d3_ = null
-        if (comConfig_.makeFile.isMakeRouter) { // 是否生成路由文件
-          try {
-            d3_ = nodeFileApi.updateRouterFile(routerData)
-          } catch (e) {
-            d3_ = {
-              code: 0, msg: `路由创建错误，详情请查看控制台日志`
-            }
-            console.log('--create router err--\n', e)
-          }
-        }
-        res.json({
-          viewPage: d2_,
-          apiPage: d_,
-          routerPage: d3_
-        })
-      } else {
-        res.json({
-          code: 0, msg: '项目根目录不存在'
-        })
-      }
+      handleCreation(req, res)
     }
   },
   {
     url: '/toCreateDialog',
     type: 'post',
     response: (req, res) => {
-      const flag = nodeFileApi.checkRootDir(req.body.rootPath)
-      if (flag) { //
-        if (comConfig_.makeFile.isMakeMock) { // 是否生成mock文件
-          try {
-            nodeFileApi.makeMockfile(req.body)
-          } catch (e) {
-            console.log('--create mock err--\n', e)
-          }
-        }
-        let d_ = null
-        if (comConfig_.makeFile.isMakeApi) {
-          try {
-            d_ = nodeFileApi.makeApifile(req.body)
-          } catch (e) {
-            d_ = {
-              code: 0, msg: `API创建错误，详情请查看控制台日志`
-            }
-            console.log('--create API err--', e)
-          }
-        }
-        let d2_ = null
-        if (comConfig_.makeFile.isMakeView) {
-          try {
-            d2_ = nodeFileApi.makeViewfile(req.body)
-          } catch (e) {
-            d2_ = {
-              code: 0, msg: `页面模板解析错误，详情请查看控制台日志`
-            }
-            console.log('--create view err--', e)
-          }
-        }
-
-        res.json({
-          viewPage: d2_,
-          apiPage: d_
-        })
-      } else {
-        res.json({
-          code: 0, msg: '项目根目录不存在'
-        })
-      }
+      handleCreation(req, res)
     }
   },
   {
@@ -186,3 +77,66 @@ module.exports = [
     }
   }
 ]
+
+/**
+ *  创建页面
+ */
+function handleCreation (req, res) {
+  const flag = nodeFileApi.checkRootDir(req.body.rootPath)
+  if (!flag) {
+    res.json({
+      code: 0, msg: '项目根目录不存在'
+    })
+    return false
+  }
+  // 按 mock、 API 、VIEW 、Router 的顺序调用
+  if (comConfig_.makeFile.isMakeMock) { // 是否生成mock文件
+    try {
+      nodeFileApi.makeMockfile(req.body)
+    } catch (e) {
+      console.log('--create mock err--\n', e)
+    }
+  }
+
+  let d_ = null
+  if (comConfig_.makeFile.isMakeApi) { // 是否生成api文件
+    try {
+      d_ = nodeFileApi.makeApifile(req.body)
+    } catch (e) {
+      d_ = {
+        code: 0, msg: `API创建错误，详情请查看控制台日志`
+      }
+      console.log('--create API err--\n', e)
+    }
+  }
+  let d2_ = null
+  if (comConfig_.makeFile.isMakeView) { // 是否生成视图文件
+    try {
+      d2_ = nodeFileApi.makeViewfile(req.body)
+    } catch (e) {
+      d2_ = {
+        code: 0, msg: `页面模板解析错误，详情请查看控制台日志`
+      }
+      console.log('--create view err--\n', e)
+    }
+  }
+
+  let d3_ = null
+  if (comConfig_.makeFile.isMakeRouter && req.body.otherConfig.type === 'page') { // 是否生成路由文件
+    try {
+      const routerData = nodeFileApi.makeRouterData(req.body)
+      d3_ = nodeFileApi.updateRouterFile(routerData)
+    } catch (e) {
+      d3_ = {
+        code: 0, msg: `路由创建错误，详情请查看控制台日志`
+      }
+      console.log('--create router err--\n', e)
+    }
+  }
+
+  res.json({
+    apiPage: d_,
+    viewPage: d2_,
+    routerPage: d3_
+  })
+}

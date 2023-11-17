@@ -1,22 +1,21 @@
 ${{include 'base/base-doc-desc.art'}}
 <template>
   <div class="app-container">
-    <el-descriptions
-     :column="${{tableConfig.columnNum}}" 
-     :colon="${{tableConfig.showColon}}" 
-     :border="${{tableConfig.showBorder}}"
-    >
-      ${{each tableData}}
-      <el-descriptions-item span="${{ $value.spanNum ? $value.spanNum :1 }}">
-        <template slot="label">
-          ${{if $value.icon}}<i class="${{$value.icon}}" /> ${{/if}}
-          ${{ $value.label }}
-        </template>
-        {{tableData['${{ $value.column }}']}}
-      </el-descriptions-item>
-      ${{/each}}
+    <div class="br-main">
+      <el-descriptions
+      :column="${{otherConfig.columnNum}}" 
+      :colon="${{otherConfig.showColon}}" 
+      :border="${{otherConfig.showBorder}}"
+      >
+        ${{each tableData}}
+        <el-descriptions-item ${{if !$value.icon}} label="${{ $value.label }}" ${{/if}} span="${{ $value.spanNum ? $value.spanNum :1 }}">
+          ${{if $value.icon}}<template slot="label"><i class="${{$value.icon}}" /> ${{ $value.label }}</template>${{/if}}
+          {{tableData['${{ $value.column }}']}}
+        </el-descriptions-item>
+        ${{/each}}
 
-    </el-descriptions>
+      </el-descriptions>
+    </div>
   </div>
 </template>
 
@@ -58,4 +57,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.br-main {
+  background: #fff;
+  padding: 20px;
+}
+</style>

@@ -44,7 +44,7 @@
       <div slot="header" class="clearfix">
         <span>检索条件</span>
         <div style="float: right;">
-          <el-checkbox v-model="tableConfig.showFormRightBtns">显示右侧按钮区</el-checkbox>
+          <el-checkbox v-model="otherConfig.showFormRightBtns">显示右侧按钮区</el-checkbox>
         </div>
       </div>
       <el-table
@@ -122,8 +122,8 @@
       <div slot="header" class="clearfix">
         <span>列表项</span>
         <div style="float: right;">
-          <el-checkbox v-model="tableConfig.showBtnCol">显示按钮列</el-checkbox>
-          <el-checkbox v-model="tableConfig.showNumCol">显示序号列</el-checkbox>
+          <el-checkbox v-model="otherConfig.showBtnCol">显示按钮列</el-checkbox>
+          <el-checkbox v-model="otherConfig.showNumCol">显示序号列</el-checkbox>
         </div>
       </div>
       <el-table
@@ -204,7 +204,7 @@ export default {
   mixins: [createMixin],
   data () {
     return {
-      tableConfig: {
+      otherConfig: {
         showBtnCol: false, // 显示按钮列
         showNumCol: true, // 显示序号列
         showFormRightBtns: false // 显示表单右侧按钮区域
@@ -238,25 +238,6 @@ export default {
       })
     },
 
-    toChoiceApiFn (val) {
-      const Old_ = this.$options.data()
-      this.tableData = Old_.tableData
-      this.tableDataSearch = Old_.tableDataSearch
-      this.apiConfig = Old_.apiConfig
-      if (val) {
-        const obj_ = this.tempCatalogData[val]
-        console.log('--', obj_, val)
-
-        this.apiConfig = this._fnMakeApiCfg(obj_)
-        this.tableData = this._fnMakeTableData(obj_)
-        this.tableDataSearch = this._fnMakeTableDataSearch(obj_)
-
-        this.$nextTick(() => {
-          this.rowDrop()
-        })
-      }
-    },
-
     toCreateFn () {
       if (!this.fnValidSearch(this.tableDataSearch)) {
         return false
@@ -266,13 +247,14 @@ export default {
         templateType: 'listPage',
         formData: JSON.parse(JSON.stringify(this.tableDataSearch)),
         tableData: JSON.parse(JSON.stringify(this.tableData)),
-        tableConfig: JSON.parse(JSON.stringify(this.tableConfig)),
+        otherConfig: JSON.parse(JSON.stringify(this.otherConfig)),
         apiConfig: JSON.parse(JSON.stringify(this.apiConfig)),
         querysInPath: JSON.parse(JSON.stringify(this.querysInPath))
       }).then(resc => {
         console.log('resc', resc)
         this.showMsgFn(resc)
       })
+      this.fnWriteOptData() // 写入操作记录
     }
   }
 }

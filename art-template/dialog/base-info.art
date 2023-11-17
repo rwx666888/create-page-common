@@ -11,9 +11,9 @@ ${{include 'base/base-doc-desc.art'}}
     @closed="closeFn"
   >
     <el-descriptions
-     :column="${{tableConfig.columnNum}}" 
-     :colon="${{tableConfig.showColon}}" 
-     :border="${{tableConfig.showBorder}}"
+     :column="${{otherConfig.columnNum}}" 
+     :colon="${{otherConfig.showColon}}" 
+     :border="${{otherConfig.showBorder}}"
     >
       ${{each tableData}}
       <el-descriptions-item span="${{ $value.spanNum ? $value.spanNum :1 }}">

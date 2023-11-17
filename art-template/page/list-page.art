@@ -23,7 +23,7 @@ ${{include 'base/base-doc-desc.art'}}
             >重置</el-button>
           </el-form-item>
         </div>
-        ${{if tableConfig.showFormRightBtns}}
+        ${{if otherConfig.showFormRightBtns}}
         <div class="form-right-box">
           <el-button type="success" icon="el-icon-plus">新建</el-button>
         </div>
@@ -40,7 +40,7 @@ ${{include 'base/base-doc-desc.art'}}
         class="cus-nowrap"
         @callback="r_tableData"
       >
-        ${{if tableConfig.showNumCol}}
+        ${{if otherConfig.showNumCol}}
         <el-table-column
           label="序号"
           type="index"
@@ -55,7 +55,7 @@ ${{include 'base/base-doc-desc.art'}}
           ${{if $value.alignType !='left'}} align="${{$value.alignType}}" ${{/if}}
         />${{/if}}
         ${{/each}}
-        ${{if tableConfig.showBtnCol}}
+        ${{if otherConfig.showBtnCol}}
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
@@ -111,10 +111,12 @@ export default {
   },
   created () {},
   methods: {
+    ${{if otherConfig.showBtnCol}}
     handleClick (row) {
       this.$message('点击了按钮！')
       console.log('click-row-data:', row)
     },
+    ${{/if}}
     resetForm () {
       this.$refs.claFrom.resetFields()
     },

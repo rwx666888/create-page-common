@@ -9,6 +9,13 @@ module.exports = {
     isMakeRouter: true, // 是否生成路由文件
     isMakeMock: false // 是否生成mock数据文件
   },
+  /**
+   * 缓存配置
+   * 目前只项目、api、版本三个维度同时匹配才会返回缓存数据，场景为：本次小迭代周内，不考虑历史版本的数据变更
+   */
+  cache: {
+    disabled: false // 是否禁用缓存
+  },
   author: 'lianglei', // 作者
   reWrite: { // 存在重名文件是否直接覆盖， true：覆盖； false：跳过; key值需与 template 中的key值一致,未设置的文件默认为true;
     listPage: true, // 列表页
@@ -88,6 +95,7 @@ module.exports = {
       demoEdu: /edu/i // 演示demo数据
     }
   },
+  // 表单元素配置
   formItemCig: {
     dataTimeRangeRegExp: '^(start|end|begin)|(start|end|begin)$', // 不区分大小写
     isStartRegExp: '^(start|begin)|(start|begin)$' // 不区分大小写
@@ -210,13 +218,13 @@ module.exports = {
       }
     }
   ],
-  tableRowBgColor: [
+  tableRowBgColor: [ // 表格行背景色
     'table-row-success',
     'table-row-brand',
     'table-row-warning',
     'table-row-danger'
   ],
-  formFieldDetection: { // 处理方法在 mixins/create.js -> formItemTypeChoice方法中
+  formFieldDetection: { // 根据字段名称及类型尝试匹配表单元素类型，处理方法在 mixins/create.js -> formItemTypeChoice方法中
     findDate: true, // 是否检测日期，并适配为日期组件
     findArray: true // 是否检测数组，并适配为下拉多选框
   }
