@@ -89,7 +89,7 @@ module.exports = {
       email: /email/i,
       uid: /(code|id)/i,
       datetime: /(^datetime|datetime$)/i,
-      date: /(^date|date$)/i,
+      date: /(^date|date$)|birthday/i,
       phone: /(^(phone|mobile)|(phone|mobile)$)/i,
       demoSex: /sex/i, // 演示demo数据
       demoEdu: /edu/i // 演示demo数据
