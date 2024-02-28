@@ -54,7 +54,9 @@ export default {
         _dataSource_: [], // 数据源，内置私有属性
         _dataSourceOpts_: {} // 数据源配置项
       },
-      tmpFormData: {}
+      tmpFormData: {},
+      /* 需要覆写的属性名称， 即在formDate中修改了组件默认属性值的属性的名称， 例如 'type'；注意：具有非空值的私有属性（_xx_）会自动应用，无需维护在这里 */
+      rewriteAttr: []
     }
   },
   computed: {},
@@ -84,13 +86,14 @@ export default {
       }
       const tmp = {}
       const oldData = this.$options.data.call(this).formData
-      // 只处理当前属性,忽略合并过来的已移除的历史属性与内置属性,忽略组件默认值的属性
       if (!this.formData.border && this.formData._type_ !== 'button') {
         delete oldData.size
       }
+      // 只保留当前最新的属性，忽略已移除的历史属性和组件默认值，以减少冗余输出。
+      const tempData = JSON.parse(JSON.stringify(this.formData))
       Object.keys(oldData).forEach(k => {
-        if (this.formData[k] !== oldData[k]) {
-          tmp[k] = this.formData[k]
+        if (this.rewriteAttr.includes(k) || /^_[\w-]+_$/.test(k) || tempData[k] !== oldData[k]) {
+          tmp[k] = tempData[k]
         }
       })
       this.rowData.opts.attr = { ...tmp }

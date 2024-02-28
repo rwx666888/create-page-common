@@ -1,4 +1,4 @@
-module.exports = {
+const _$cusConfig$_ = {
   // 分页参数，例如每页条数，当前页码等非用户输入的参数
   pageListParams: [
     'pageSize', 'currentPage'
@@ -14,9 +14,9 @@ module.exports = {
    * 目前只项目、api、版本三个维度同时匹配才会返回缓存数据，场景为：本次小迭代周内，不考虑历史版本的数据变更
    */
   cache: {
-    disabled: false // 是否禁用缓存
+    disabled: true // 是否禁用缓存
   },
-  author: 'lianglei', // 作者
+  author: 'lianglei-2-1', // 作者
   reWrite: { // 存在重名文件是否直接覆盖， true：覆盖； false：跳过; key值需与 template 中的key值一致,未设置的文件默认为true;
     listPage: true, // 列表页
     infoPage: true, // 详情页
@@ -31,7 +31,8 @@ module.exports = {
     apisFilePath: 'src/apis', // api文件目录
     httpFile: '@/apis/request.js', // 网络请求库，例如 axios；必须 export 导出 （post get del put）方法
     routerFile: 'src/router/index.js', // 路由文件
-    routerMatchMark: '@/views/' // 路由文件中路由匹配标记, 可匹配路由文件中 component: () => import('@/views/icons/index'), 的 @/views/部分，
+    routerMatchMark: '@/views/', // 路由文件中路由匹配标记, 可匹配路由文件中 component: () => import('@/views/icons/index'), 的 @/views/部分，
+    useRouterGroup: false // 是否启用路由分组，启用后，将会在路由文件中生成分组路由文件，例如：src/router/park/user.js ,存储路径由 template.routerFile.savePath 决定, 文件后缀名始终与主路由文件一致
   },
   // 生成文件的配置, 其中base开头的为基础模板配置，不可修改属性名称
   template: {
@@ -59,8 +60,16 @@ module.exports = {
       dirSuffix: '-page', // 视图目录后缀连接词, 例如 /user-page
       template: 'page/form-page.art' // 模板名称 相对于 /art-template 目录
     },
+    formDialog: { // 表单页弹窗 dialog
+      savePath: 'src/components', // 生成的位置目录 相对于项目根目录的路径， 例如： src/components
+      suffix: '-form-dialog',
+      dirSuffix: '', // 视图目录后缀连接词, 例如 /user-page
+      template: 'dialog/base-form.art' // 模板名称 相对于 /art-template 目录
+    },
     routerFile: { // 路由文件；名称不可修改; 暂不支持外部多路由文件，只支持单路由文件，也不支持路由的命名视图、动态加载等
-      template: 'base/base-router.art' // 模板名称 相对于 /art-template 目录
+      template: 'base/base-router.art', // 模板名称 相对于 /art-template 目录
+      templateLayout: 'base/base-router-layout.art',
+      savePath: './park' // 路由分组文件保存目录，相对于主路由文件的路径 ，例如 projectPath.routerFile， 仅当 projectPath.useRouterGroup 为true时生效
     },
     baseMockData: { // mock数据 baseMockData 名称不可修改
       savePath: 'mock/json', // 生成的位置目录 相对于项目根目录 /mock/json/data
@@ -149,7 +158,7 @@ module.exports = {
       },
       dataSource: {
         dataType: 'array',
-        default: [{ value: null, label: '全部' }]
+        default: [ { value: null, label: '全部' } ]
       }
     },
     {
@@ -161,7 +170,7 @@ module.exports = {
       },
       dataSource: {
         dataType: 'array',
-        default: [{ value: '-1', label: '选项一' }, { value: '-2', label: '选项二' }]
+        default: [ { value: '-1', label: '选项一' }, { value: '-2', label: '选项二' } ]
       }
     },
     {
@@ -181,7 +190,7 @@ module.exports = {
       },
       dataSource: {
         dataType: 'array',
-        default: [{ value: '-1', label: '选项一' }, { value: '-2', label: '选项二' }]
+        default: [ { value: '-1', label: '选项一' }, { value: '-2', label: '选项二' } ]
       }
     },
     {
@@ -228,4 +237,9 @@ module.exports = {
     findDate: true, // 是否检测日期，并适配为日期组件
     findArray: true // 是否检测数组，并适配为下拉多选框
   }
+}
+
+// 在 Node.js 环境中，将 _$configFormValidMsg$_ 导出
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = _$cusConfig$_
 }

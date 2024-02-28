@@ -66,7 +66,9 @@ export default {
         _appendType_: '',
         _appendVal_: ''
       },
-      tmpFormData: {}
+      tmpFormData: {},
+      /* 需要覆写的属性名称， 即在formDate中修改了组件默认属性值的属性的名称， 例如 'type'；注意：具有非空值的私有属性（_xx_）会自动应用，无需维护在这里 */
+      rewriteAttr: []
     }
   },
   computed: {},
@@ -91,9 +93,12 @@ export default {
       } else {
         const tmp = {}
         const oldData = this.$options.data.call(this).formData
-        // 只处理当前属性,忽略合并过来的已移除的历史属性与内置属性
+        // 只保留当前最新的属性，忽略已移除的历史属性和组件默认值，以减少冗余输出。
+        const tempData = JSON.parse(JSON.stringify(this.formData))
         Object.keys(oldData).forEach(k => {
-          tmp[k] = this.formData[k]
+          if (this.rewriteAttr.includes(k) || /^_[\w-]+_$/.test(k) || tempData[k] !== oldData[k]) {
+            tmp[k] = tempData[k]
+          }
         })
         this.rowData.opts.attr = { ...tmp }
       }

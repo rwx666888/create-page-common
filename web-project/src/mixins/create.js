@@ -1,10 +1,10 @@
 
 import { dbGet, addOrUpdateData, getDataByProjectApiVersion, delByProjectApiNotVer } from '@/utils/db.js'
-import config_ from '@/config.js'
 import Sortable from 'sortablejs'
-import { isEmptyObject } from '@/utils/index.js'
+import { isEmptyObject, _getInitAttrOfComp, getCusComptByFormItemType } from '@/utils/index.js'
 
 const com_ = require('create-vue-page-npm').createApi
+const config_ = _$cusConfig$_
 
 let rowbg_ = {}
 export default {
@@ -223,28 +223,27 @@ export default {
       }
       return c_
     },
-    /**
-     *  获取自定义组件,根据组件类型
-     * @param {string} formItemType
-     * @return {Object} 组件对象, 非组件实例，找不到返回 null
-     */
-    getCusComptByFormItemType (formItemType) {
-      const n_ = 'Set' + (formItemType.charAt(0).toUpperCase() + formItemType.slice(1))
-      return _$cusComponents$_[n_] || null
-    },
+
     // 组件类型发生变化
     fnSelFormItemType (val, row) {
       const _oldFormItemType = row.formItemType
       const _resetFn_ = () => { // 尝试重置旧组件的关联设置
-        const _oldFormItemComp = this.getCusComptByFormItemType(_oldFormItemType)
+        const _oldFormItemComp = getCusComptByFormItemType(_oldFormItemType)
         if (_oldFormItemComp && _oldFormItemComp.methods.__toResetFn) {
           _oldFormItemComp.methods.__toResetFn(row, this.tableDataSearch, val)
         }
       }
       const _autoInitFn_ = () => { // 尝试自动初始化新组件的关联设置
-        const _newFormItemComp = this.getCusComptByFormItemType(val)
-        if (_newFormItemComp && _newFormItemComp.methods.__autoInitConfig) {
-          _newFormItemComp.methods.__autoInitConfig(row, this.tableDataSearch, this.theDateRangeObj)
+        const _newFormItemComp = getCusComptByFormItemType(val)
+        if (_newFormItemComp) {
+          const attr_ = _getInitAttrOfComp(_newFormItemComp)
+          console.log('---attr_--', attr_)
+          if (!isEmptyObject(attr_)) {
+            row.opts.attr = attr_
+          }
+          if (_newFormItemComp.methods.__autoInitConfig) {
+            _newFormItemComp.methods.__autoInitConfig(row, this.tableDataSearch, { rangeObj: this.theDateRangeObj })
+          }
         }
       }
 
@@ -266,6 +265,7 @@ export default {
       } else {
         _resetFn_()
         row.formItemType = val
+        row.opts.attr = null
         row.opts.range = null
         _autoInitFn_()
       }
@@ -283,20 +283,21 @@ export default {
       // 过滤 vue页面的名称，过滤后名字可能为空，所以设置默认值 index
       const filterNameToPath = obj_.name.replace(/(^query|list$)/gi, '') || 'index'
       // 过滤后的api名称，主要用于生成 view 页面文件的名称 xxx-xxx-xxx
-      const nameToPathfilter = filterNameToPath.replace(filterNameToPath.charAt(0), filterNameToPath.charAt(0).toLowerCase()).replace(/([A-Z])/g, '-$1').toLowerCase()
-      // 连接符（-）的 api名称 xxx-xxx-xxx
-      const nameToPath = obj_.name.replace(obj_.name.charAt(0), obj_.name.charAt(0).toLowerCase()).replace(/([A-Z])/g, '-$1').toLowerCase()
-      const curTagCode = obj_.tags.code || ''
+      const nameToPathfilter = com_.getCaseFormat(filterNameToPath).kebabCase
+      const curName = com_.getCaseFormat(obj_.name) // api名称, 返回 { camelCase, pascalCase, kebabCase }
+      const curTagCode = com_.getCaseFormat(obj_.tags.code) // API 所属分组 tags, 返回 { camelCase, pascalCase, kebabCase }
+      console.log('--curTagCode', curTagCode, '-- ', obj_.tags.code)
       return {
         name: obj_.name, // api名称
-        nameHump: obj_.name.replace(obj_.name.charAt(0), obj_.name.charAt(0).toUpperCase()), // api名称, 大驼峰格式
+        nameHump: curName.pascalCase, // api名称, 大驼峰格式
+        nameToPath: curName.kebabCase, // 连接符（-）的 api名称
         nameToPathfilter, // 过滤后的api名称，主要用于生成 view 页面文件的名称
-        nameToPath, // 连接符（-）的 api名称
         desc: obj_.summary, // 接口描述
         type: obj_.type === 'delete' ? 'del' : obj_.type, // 请求类型
         uri: obj_.uri, // 接口地址
-        fileName: curTagCode.replace(/([A-Z])/g, '-$1').toLowerCase(), // API 所属分组 tags,连接符（-）格式，用于生成api文件的名称
-        fileNameHump: curTagCode.replace(curTagCode.charAt(0), curTagCode.charAt(0).toUpperCase()), // API 所属分组 tags, 大驼峰格式
+        fileName: curTagCode.kebabCase, // API 所属分组 tags,连接符（-）格式，用于生成api文件的名称
+        fileNameHump: curTagCode.pascalCase, // API 所属分组 tags, 大驼峰格式
+        fileNameCamel: curTagCode.camelCase, // API 所属分组 tags, 小驼峰格式
         fileDesc: obj_.tags.label // API 所属分组的描述
       }
     },
@@ -377,9 +378,17 @@ export default {
             spanNum: 1
           }
           // 自动适配表单元素配置项
-          const thatApi_ = this.getCusComptByFormItemType(row_.formItemType)
-          if (thatApi_ && thatApi_.methods.__autoInitConfig) {
-            thatApi_.methods.__autoInitConfig(row_, false, this.theDateRangeObj)
+          const thatApi_ = getCusComptByFormItemType(row_.formItemType)
+          if (thatApi_) {
+            const attr_ = _getInitAttrOfComp(thatApi_)
+            console.log('---attr_', attr_)
+            if (!isEmptyObject(attr_)) {
+              row_.opts.attr = attr_
+            }
+
+            if (thatApi_.methods.__autoInitConfig) {
+              thatApi_.methods.__autoInitConfig(row_, false, { rangeObj: this.theDateRangeObj })
+            }
           }
 
           return row_

@@ -44,6 +44,20 @@
       <div slot="header" class="clearfix">
         <span>检索条件</span>
         <div style="float: right;">
+          展现类型：<el-select
+            v-model="otherConfig.type"
+            size="mini"
+            style="width: 100px;"
+          >
+            <el-option
+              label="页面"
+              value="page"
+            />
+            <el-option
+              label="弹窗"
+              value="dialog"
+            />
+          </el-select>
           列数：
           <el-select
             v-model="otherConfig.columnNum"
@@ -181,7 +195,7 @@ export default {
       }
       toCreatePage({
         rootPath: this.localProjectPath,
-        templateType: 'formPage',
+        templateType: this.otherConfig.type === 'page' ? 'formPage' : 'formDialog',
         formData: JSON.parse(JSON.stringify(this.tableDataSearch)),
         tableData: JSON.parse(JSON.stringify(this.tableData)),
         otherConfig: JSON.parse(JSON.stringify(this.otherConfig)),

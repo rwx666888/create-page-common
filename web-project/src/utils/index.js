@@ -409,3 +409,53 @@ export function getVariableType (variable) {
     return 'unknown'
   }
 }
+
+/**
+ * 判断属性值是否有效
+ * @param {any} value
+ * @return {boolean}
+ */
+export function isValidValue (value) {
+  // 判断属性值是否有效
+  return (
+    value !== '' &&
+    value !== null &&
+    value !== undefined &&
+    !(Array.isArray(value) && value.length === 0) &&
+    !(typeof value === 'object' && Object.keys(value).length === 0)
+  )
+}
+
+/**
+ * 获取组件的初始化属性
+ * 包含 _xx_ 格式且具有有效值的属性，及rewriteAttr中的属性
+ * @param {Object} compApi
+ * @return {Object}
+ */
+export function _getInitAttrOfComp (compApi) {
+  const result = {}
+  if (!compApi || !compApi.data) {
+    return result
+  }
+  const data_ = compApi.data.call({ itemSetIns: {} }) || {}
+  if (!isEmptyObject(data_) && !isEmptyObject(data_.formData)) {
+    const obj = data_.formData
+    const rewriteAttr = Array.isArray(data_.rewriteAttr) ? data_.rewriteAttr : []
+    for (const key in obj) {
+      if (rewriteAttr.includes(key) || (/^_[\w-]+_$/.test(key) && isValidValue(obj[key]))) {
+        result[key] = obj[key]
+      }
+    }
+  }
+  return result
+}
+
+/**
+ *  获取自定义组件,根据组件类型
+ * @param {string} formItemType
+ * @return {Object} 组件对象, 非组件实例，找不到返回 null
+ */
+export function getCusComptByFormItemType (formItemType) {
+  const n_ = 'Set' + (formItemType.charAt(0).toUpperCase() + formItemType.slice(1))
+  return _$cusComponents$_[n_] || null
+}

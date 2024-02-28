@@ -1,13 +1,26 @@
 const fs = require('fs')
 const path = require('path')
-const comConfig_ = require('../../src/config.js')
+
 const template_ = require('art-template')
 const axios = require('axios')
-
 const nodeFileApi = require('create-vue-page-npm').nodeFileApi
+const fsExtra = require('fs-extra')
 
+const target_ = process.env.npm_config_target || 'vue2'
+const targetFromPath_ = path.join(__dirname, '../../../server/create_cfg_tmpl', target_)
+console.log('导入模板：', target_)
+if (fsExtra.existsSync(targetFromPath_)) {
+  const targetToPath_ = path.join(__dirname, '../../public/tmpl_cfg')
+  fsExtra.emptyDirSync(targetToPath_)
+  fsExtra.copySync(targetFromPath_, targetToPath_)
+} else {
+  console.log('未找到模板目录:', targetFromPath_)
+}
+// 注意：必须先拷贝模板文件，再导入配置文件
+const comConfig_ = require('../../public/tmpl_cfg/config/config.js')
+const templateCfg = { ...comConfig_, _templateRoot_: path.join(__dirname, '../../public/tmpl_cfg/template') }
 // 初始化模板解析器
-nodeFileApi.initTemplate(template_, comConfig_)
+nodeFileApi.initTemplate(template_, templateCfg)
 
 module.exports = [
   {
@@ -50,15 +63,6 @@ module.exports = [
       } catch (e) {
         res.status(500).json({ tip: '本地项目根目录配置有误，如确认无误则忽略此提示' })
       }
-    }
-  },
-  {
-    url: '/getComConfig',
-    type: 'get',
-    response: (req, res) => {
-      var data = fs.readFileSync(path.resolve('src/config.js'))
-      const str = data.toString()
-      res.send(str.replace(/module.exports\s*?=\s*?/, ''))
     }
   },
   {

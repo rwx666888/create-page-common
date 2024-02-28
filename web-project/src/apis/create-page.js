@@ -11,6 +11,4 @@ export const toCreatePage = (data) => post('/toCreatePage', data, { useMockServe
 
 export const getProjectInfo = (data) => post('/getProjectInfo', data, { useMockServer: true })
 
-export const getComConfig = (data) => get('/getComConfig', data, { useMockServer: true })
-
 export const toCreateDialog = (data) => post('/toCreateDialog', data, { useMockServer: true })

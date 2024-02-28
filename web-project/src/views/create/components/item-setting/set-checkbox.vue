@@ -50,7 +50,9 @@ export default {
         border: false, // 是否显示边框，建议使用组件的默认值
         size: '' // 尺寸，建议使用组件的默认值
       },
-      tmpFormData: {}
+      tmpFormData: {},
+      /* 需要覆写的属性名称， 即在formDate中修改了组件默认属性值的属性的名称， 例如 'type'；注意：具有非空值的私有属性（_xx_）会自动应用，无需维护在这里 */
+      rewriteAttr: []
     }
   },
   computed: {},
@@ -80,9 +82,11 @@ export default {
       if (!this.formData.border) {
         delete oldData.size
       }
+      // 只保留当前最新的属性，忽略已移除的历史属性和组件默认值，以减少冗余输出。
+      const tempData = JSON.parse(JSON.stringify(this.formData))
       Object.keys(oldData).forEach(k => {
-        if (this.formData[k] !== oldData[k]) {
-          tmp[k] = this.formData[k]
+        if (this.rewriteAttr.includes(k) || /^_[\w-]+_$/.test(k) || tempData[k] !== oldData[k]) {
+          tmp[k] = tempData[k]
         }
       })
       this.rowData.opts.attr = { ...tmp }

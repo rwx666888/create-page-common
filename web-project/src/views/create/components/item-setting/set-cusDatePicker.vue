@@ -86,8 +86,9 @@
 </template>
 
 <script>
-import config_ from '@/config.js'
+import { isEmptyObject, _getInitAttrOfComp, getCusComptByFormItemType } from '@/utils/index.js'
 
+const config_ = _$cusConfig$_
 const com_ = require('create-vue-page-npm').createApi
 
 export default {
@@ -108,7 +109,9 @@ export default {
         format: 'yyyy-MM-dd',
         'value-format': 'yyyy-MM-dd'
       },
-      tmpFormData: {}
+      tmpFormData: {},
+      /* 需要覆写的属性名称， 即在formDate中修改了组件默认属性值的属性的名称， 例如 'type'；注意：具有非空值的私有属性（_xx_）会自动应用，无需维护在这里 */
+      rewriteAttr: ['type', 'format', 'value-format']
     }
   },
   computed: {},
@@ -201,9 +204,6 @@ export default {
             }
           }
         }
-
-        console.log('this.rowData', tempStart.column, tempEnd.column)
-        // this.itemSetIns.hide()
         return true
       } else {
         this.$alert(`开始时间或结束时间必须有其一包含当前配置列【 ${this.rowData.column} 】`, '错误')
@@ -217,33 +217,45 @@ export default {
      * 可访问的全局变量：
      *  _$cusConfig$_ 配置项，对应config.js中的配置项
      *  _$cusComponents$_ 组件列表，对应item-setting 目录下的组件列表；_$cusComponents$_['SetInput'] 为 SetInput 组件,注意不是组件实例
-     * @param {Object} row 当前操作行的数据 【原型链修改】
-     * @param {Array | false} tableDataSearch 当前操作行的数据 【原型链修改】,如果是false则表示只操作当前行的数据，不操作关联行的数据
+     *  访问组件内的方法： _$cusComponents$_['SetInput'].methods.__autoInitConfig, 注意：被访问的方法中不能使用this
+     *  访问组件内的data： _$cusComponents$_['SetInput'].data.call({}), 注意：不能获取data中包含this的引用，均为undefined 或 异常
+     * @param {Object} row 当前操作行的数据 【原型链修改】 其中 row.formItemType 始终为修改后的新值，而 __toResetFn 方法中的 row.formItemType 始终为修改前的旧值
+     * @param {Array | false} tableDataSearch 当前视图的数据 【原型链修改】,如果是false则表示只操作当前行的数据，不操作关联行的数据
+     * @param {Object} other 其它参数
      */
-    __autoInitConfig (row, tableDataSearch = [], rangeObj = {}) {
-      if (!rangeObj) {
+    __autoInitConfig (row, tableDataSearch = [], other = {}) {
+      if (!other.rangeObj) {
         return false
       }
-      const curRange_ = rangeObj[row.column] || null
+      const curRange_ = other.rangeObj[row.column] || null
       row.isShow = (curRange_ ? (!!(curRange_.isDatePickerRange && curRange_.isStart)) : true)
       row.opts.range = curRange_
       if (tableDataSearch && curRange_) {
         const toObj_ = com_.getRowFormListByColname(tableDataSearch, 'column', row.opts.range.to_)
         if (toObj_) {
-          const toRange_ = rangeObj[toObj_.column] || null
+          const toRange_ = other.rangeObj[toObj_.column] || null
           toObj_.opts.range = toRange_
           toObj_.opts.attr = null
-          toObj_.formItemType = 'cusDatePicker'
+          toObj_.formItemType = row.formItemType
           toObj_.isShow = (toRange_ ? (!!(toRange_.isDatePickerRange && toRange_.isStart)) : true)
+
+          const _Comp = getCusComptByFormItemType(row.formItemType)
+          if (_Comp) {
+            const attr_ = _getInitAttrOfComp(_Comp)
+            console.log('---attr_--init', row.column, toObj_.column, attr_)
+            if (!isEmptyObject(attr_)) {
+              toObj_.opts.attr = attr_
+            }
+          }
         }
       }
     },
     /**
      * 重置关联数据的配置项
-     * 注意当前操作行的数据，或默认自动重置不需要在这里处理(组件私有数据除外)，这里只处理关联数据的配置项
+     * 注意当前操作行的数据，会默认自动重置不需要在这里处理(组件私有数据除外)，这里只处理关联数据的配置项
      * 例如 开始时间与结束时间的关联，开始时间的配置项修改后，同时需要在这里重置结束时间的配置项
-     * @param {Object} row 【原型链修改】当前行数据
-     * @param {Array} tableDataSearch 【原型链修改】
+     * @param {Object} row 【原型链修改】当前行数据 ，其中 row.formItemType 始终为修改前的旧值，而 __autoInitConfig 方法中的 row.formItemType 始终为修改后的新值
+     * @param {Array} tableDataSearch 【原型链修改】当前视图的数据
      * @param {Object} newFormItemType 新的formItemType值
      */
     __toResetFn (row, tableDataSearch = [], newFormItemType) {
@@ -256,9 +268,19 @@ export default {
           toObj_.opts.attr = null
           toObj_.formItemType = newFormItemType
           toObj_.isShow = true
+
+          const _Comp = getCusComptByFormItemType(newFormItemType)
+          if (_Comp) {
+            const attr_ = _getInitAttrOfComp(_Comp)
+            console.log('---attr_--reset', row.column, toObj_.column, attr_)
+            if (!isEmptyObject(attr_)) {
+              toObj_.opts.attr = attr_
+            }
+            if (_Comp.methods.__autoInitConfig) {
+              _Comp.methods.__autoInitConfig(toObj_, tableDataSearch)
+            }
+          }
         }
-        row.opts.range = null
-        row.opts.attr = null
         row.isShow = true
       }
     }

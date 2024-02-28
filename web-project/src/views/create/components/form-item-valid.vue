@@ -70,7 +70,7 @@
 
 <script>
 import { objectMerge } from '@/utils/index.js'
-import ConfigFormValidMsg from '@/config-form-valid-msg.js'
+const configFormValidMsg = _$configFormValidMsg$_
 
 export default {
   name: 'FormItemValid',
@@ -79,25 +79,25 @@ export default {
   data () {
     return {
       rowData: this.itemSetIns.rowData, // 【原型链对象】，当前操作行的数据，直接修改原型链
-      typeListOpt: ConfigFormValidMsg.itemType,
+      typeListOpt: configFormValidMsg.itemType,
       ruleForm: {
         type: {
           value: 'string',
-          message: ConfigFormValidMsg.itemType.string.msg
+          message: configFormValidMsg.itemType.string.msg
         },
         required: {
           value: false,
-          message: ConfigFormValidMsg.required.msg
+          message: configFormValidMsg.required.msg
         },
         isMinMax: {
           active: false,
           min: '',
           max: '',
-          message: ConfigFormValidMsg.isMinMax.strMsg
+          message: configFormValidMsg.isMinMax.strMsg
         },
         regexp: {
           value: '',
-          message: ConfigFormValidMsg.regexp.msg
+          message: configFormValidMsg.regexp.msg
         }
       },
       // 临时存储传递过来的配置信息，用于比较是否有变化
@@ -110,8 +110,8 @@ export default {
       immediate: false,
       handler (newValue, oldValue) {
         console.log('newValue: ', newValue)
-        this.ruleForm.type.message = ConfigFormValidMsg.itemType[newValue].msg
-        this.ruleForm.isMinMax.message = ['number', 'integer', 'float'].includes(newValue) ? ConfigFormValidMsg.isMinMax.intMsg : ConfigFormValidMsg.isMinMax.strMsg
+        this.ruleForm.type.message = configFormValidMsg.itemType[newValue].msg
+        this.ruleForm.isMinMax.message = ['number', 'integer', 'float'].includes(newValue) ? configFormValidMsg.isMinMax.intMsg : configFormValidMsg.isMinMax.strMsg
       }
     }
 

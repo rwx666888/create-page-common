@@ -28,10 +28,6 @@ import './components/_globals.js'
 // 注册表单元素配置到 window._$cusComponents$_
 import './views/create/components/global-item-setting.js'
 
-// 生成器全局配置
-import config_ from './config.js'
-window._$cusConfig$_ = config_
-
 Element.Dialog.props.closeOnClickModal.default = false // 全局禁止通过点击 modal 关闭 Dialog
 Element.Dialog.props.closeOnPressEscape = false // 全局禁止通过按下 ESC 关闭 Dialog
 Vue.use(Element, {

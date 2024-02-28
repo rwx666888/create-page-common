@@ -48,7 +48,9 @@ export default {
         _dataSource_: [], // 数据源，内置私有属性
         _dataSourceOpts_: {} // 数据源配置项
       },
-      tmpFormData: {}
+      tmpFormData: {},
+      /* 需要覆写的属性名称， 即在formDate中修改了组件默认属性值的属性的名称， 例如 'type'；注意：具有非空值的私有属性（_xx_）会自动应用，无需维护在这里 */
+      rewriteAttr: []
     }
   },
   computed: {},
@@ -74,16 +76,19 @@ export default {
           return false
         }
       }
-      const tmp = {}
       const oldData = this.$options.data.call(this).formData
-      // 只处理当前属性,忽略合并过来的已移除的历史属性与内置属性,忽略组件默认值的属性
+
       if (!this.formData.multiple) {
         delete oldData['collapse-tags']
         delete oldData['multiple-limit']
       }
+
+      // 只保留当前最新的属性，忽略已移除的历史属性和组件默认值，以减少冗余输出。
+      const tmp = {}
+      const tempData = JSON.parse(JSON.stringify(this.formData))
       Object.keys(oldData).forEach(k => {
-        if (this.formData[k] !== oldData[k]) {
-          tmp[k] = this.formData[k]
+        if (this.rewriteAttr.includes(k) || /^_[\w-]+_$/.test(k) || tempData[k] !== oldData[k]) {
+          tmp[k] = tempData[k]
         }
       })
       this.rowData.opts.attr = { ...tmp }
@@ -97,9 +102,13 @@ export default {
      * 可访问的全局变量：
      *  _$cusConfig$_ 配置项，对应config.js中的配置项
      *  _$cusComponents$_ 组件列表，对应item-setting 目录下的组件列表；_$cusComponents$_['SetInput'] 为 SetInput 组件,注意不是组件实例
-     * @param {Object} row 当前操作行的数据 【原型链修改】
+     *  访问组件内的方法： _$cusComponents$_['SetInput'].methods.__autoInitConfig, 注意：被访问的方法中不能使用this
+     *  访问组件内的data： _$cusComponents$_['SetInput'].data.call({}), 注意：不能获取data中包含this的引用，均为undefined 或 异常
+     * @param {Object} row 当前操作行的数据 【原型链修改】 其中 row.formItemType 始终为修改后的新值，而 __toResetFn 方法中的 row.formItemType 始终为修改前的旧值
+     * @param {Array | false} tableDataSearch 当前视图的数据 【原型链修改】,如果是false则表示只操作当前行的数据，不操作关联行的数据
+     * @param {Object} other 其它参数
      */
-    __autoInitConfig (row, tableDataSearch = []) {
+    __autoInitConfig (row, tableDataSearch = [], other = {}) {
       if (row.formItemType === 'select' && row.columnType === 'array') { // 数组类型的select,默认多选
         row.opts.attr = Object.assign({}, (row.opts.attr || {}), {
           multiple: true // 是否多选
@@ -108,10 +117,15 @@ export default {
     },
     /**
      * 重置关联数据的配置项
-     * 注意当前操作行的数据，或默认自动重置不需要在这里处理(组件私有数据除外)，这里只处理关联数据的配置项
+     * 注意当前操作行的数据，会默认自动重置不需要在这里处理(组件私有数据除外)，这里只处理关联数据的配置项
      * 例如 开始时间与结束时间的关联，开始时间的配置项修改后，同时需要在这里重置结束时间的配置项
+     * @param {Object} row 【原型链修改】当前行数据 ，其中 row.formItemType 始终为修改前的旧值，而 __autoInitConfig 方法中的 row.formItemType 始终为修改后的新值
+     * @param {Array} tableDataSearch 【原型链修改】
+     * @param {Object} newFormItemType 新的formItemType值
      */
-    __toResetFn (row, tableDataSearch = [], newFormItemType) {}
+    __toResetFn (row, tableDataSearch = [], newFormItemType) {
+
+    }
   }
 }
 </script>

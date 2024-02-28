@@ -1,4 +1,4 @@
-module.exports = {
+const _$configFormValidMsg$_ = {
   itemType: {
     any: {
       label: '任何类型',
@@ -47,4 +47,9 @@ module.exports = {
   regexp: {
     msg: ''
   }
+}
+
+// 在 Node.js 环境中，将 _$configFormValidMsg$_ 导出
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = _$configFormValidMsg$_
 }
