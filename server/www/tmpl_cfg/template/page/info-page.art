@@ -1,0 +1,65 @@
+${{include 'base/base-doc-desc.art'}}
+<template>
+  <div class="app-container">
+    <div class="br-main">
+      <el-descriptions
+      :column="${{otherConfig.columnNum}}" 
+      :colon="${{otherConfig.showColon}}" 
+      :border="${{otherConfig.showBorder}}"
+      >
+        ${{each tableData}}
+        <el-descriptions-item ${{if !$value.icon}} label="${{ $value.label }}" ${{/if}} span="${{ $value.spanNum ? $value.spanNum :1 }}">
+          ${{if $value.icon}}<template slot="label"><i class="${{$value.icon}}" /> ${{ $value.label }}</template>${{/if}}
+          {{tableData['${{ $value.column }}']}}
+        </el-descriptions-item>
+        ${{/each}}
+
+      </el-descriptions>
+    </div>
+  </div>
+</template>
+
+<script>
+import { ${{apiConfig.name}} } from '@/apis/${{apiConfig.fileName}}.js'
+  
+export default {
+  name: '${{$imports.comConfig.routerSuffix.lever2 + apiConfig.nameHump}}',
+  components: {},
+  data () {
+    return {
+      dialogVisible: false,
+      // 非必须，临时存储外部传递过来的数据
+      formData: this.$route.query || {},
+      // 视图数据
+      tableData: {}
+    }
+  },
+  watch: {},
+  methods: {
+    init () {
+      ${{if formData.length}}
+      /**
+       * {
+       * ${{each formData}} ${{$value.column}} : ${{$value.label}} ${{/each}}
+       * }
+       */
+      ${{/if}}
+      const _data = {
+        ...this.formData
+      }
+      ${{apiConfig.name}}(_data).then(res => {
+        console.log(res)
+        this.tableData = res
+      }).catch(() => {
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.br-main {
+  background: #fff;
+  padding: 20px;
+}
+</style>

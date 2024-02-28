@@ -1,0 +1,29 @@
+${{if rtype ==='lever1'}}
+{ 
+  path: '/${{lever1Path}}', 
+  component: Layout, 
+  name:'${{lever1RouterName}}',
+  meta: { 
+    title: '${{lever1PageName}}', 
+    icon: 'el-icon-orange',
+    code: '' // 设置code即可启用权限控制 
+  }, 
+  redirect: '${{lever2Path}}', 
+  children: [ 
+    {
+      path: '${{lever2Path}}',
+      component: () => import('@/views/${{filePath}}'),
+      name: '${{lever2RouterName}}',
+      meta: { title: '${{lever2PageName}}', code: '' }
+    }
+  ]
+}
+${{/if}}
+${{if rtype ==='lever2'}}
+{
+  path: '${{lever2Path}}',
+  component: () => import('@/views/${{filePath}}'),
+  name: '${{lever2RouterName}}',
+  meta: { title: '${{lever2PageName}}', code: '' }
+}
+${{/if}}

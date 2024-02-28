@@ -1,0 +1,88 @@
+${{include 'base/base-doc-desc.art'}}
+<template>
+  <el-dialog
+    :visible.sync="dialogVisible"
+    width="70%"
+    title="详情"
+    custom-class="cus-drawer"
+    append-to-body
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    @closed="closeFn"
+  >
+    <el-descriptions
+     :column="${{otherConfig.columnNum}}" 
+     :colon="${{otherConfig.showColon}}" 
+     :border="${{otherConfig.showBorder}}"
+    >
+      ${{each tableData}}
+      <el-descriptions-item span="${{ $value.spanNum ? $value.spanNum :1 }}">
+        <template slot="label">
+          ${{if $value.icon}}<i class="${{$value.icon}}" /> ${{/if}}
+          ${{ $value.label }}
+        </template>
+        {{tableData['${{ $value.column }}']}}
+      </el-descriptions-item>
+      ${{/each}}
+
+    </el-descriptions>
+  </el-dialog>
+</template>
+
+<script>
+import { ${{apiConfig.name}} } from '@/apis/${{apiConfig.fileName}}.js'
+  
+export default {
+  name: '${{"Dialog" + apiConfig.nameHump}}',
+  components: {},
+  data () {
+    return {
+      dialogVisible: false,
+      // 非必须，临时存储外部传递过来的数据
+      rowData: {},
+      // 视图数据
+      tableData: {}
+    }
+  },
+  watch: {},
+  methods: {
+    init () {
+      ${{if formData.length}}
+      /**
+       * {
+       * ${{each formData}} ${{$value.column}} : ${{$value.label}} ${{/each}}
+       * }
+       */
+      ${{/if}}
+      const _data = {
+        ...this.rowData
+      }
+      ${{apiConfig.name}}(_data).then(res => {
+        console.log(res)
+        this.tableData = res
+      }).catch(() => {
+      })
+    },
+    // 弹窗关闭后回调，要求重置数据状态及表单验证状态
+    closeFn () {
+      let oldData = this.$options.data()
+      this.rowData = oldData.rowData
+      this.tableData = oldData.tableData
+    },
+    show (param) {
+      this.dialogVisible = true
+      console.log('init-show: ', param)
+      this.$nextTick(() => {
+        if (param) {
+          this.rowData = param
+          this.init()
+        } else {
+          this.rowData = {}
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped></style>

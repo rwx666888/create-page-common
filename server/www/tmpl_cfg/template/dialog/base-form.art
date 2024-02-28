@@ -1,0 +1,116 @@
+<% var _ValidationList_ = $imports.getValidationListImport(formData) %>
+${{include 'base/base-doc-desc.art'}}
+<template>
+  <el-dialog
+    :visible.sync="dialogVisible"
+    width="70%"
+    title="详情"
+    custom-class="cus-drawer"
+    append-to-body
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    @closed="closeFn"
+  >
+
+    ${{set len_ = formData.length}}
+    <el-form ref="claFrom" :model="claForm" 
+      ${{if _ValidationList_.length}} :rules="rules" ${{/if}}
+      label-width="auto">
+      ${{if otherConfig.columnNum == 1}}
+        ${{include 'base/base-form-item.art'}}
+      ${{else}}
+        <% var tindex_ = 0; %>
+        ${{each formData}} 
+          ${{if ($value.spanNum||1) + tindex_ > otherConfig.columnNum}}
+            </el-row>
+            <% tindex_ = 0; %>
+          ${{/if}}
+          ${{if tindex_ == 0 }}
+            <el-row>
+          ${{/if}}
+            <el-col :span="${{24 / otherConfig.columnNum * ($value.spanNum||1) }}">
+              ${{if $value.isShow}}
+              <el-form-item prop="${{$value.column}}" label="${{$value.label}}">
+                ${{include 'base/form/'+$value.formItemType+'.art' $value}}
+              </el-form-item>
+              ${{/if}}
+            </el-col>
+            <% tindex_ = tindex_ + ($value.spanNum||1); %>
+          ${{if tindex_ ==  otherConfig.columnNum || $index == len_}}
+            </el-row>
+            <% tindex_ = 0; %>
+          ${{/if}}
+        ${{/each}}
+      ${{/if}}
+      
+    </el-form>
+
+  </el-dialog>
+</template>
+
+<script>
+<% var _CusPluginsList_ = $imports.getCusPluginsListImport(formData) %>
+import { ${{apiConfig.name}} } from '@/apis/${{apiConfig.fileName}}.js'
+${{each _CusPluginsList_}}import ${{$value.name}} from '${{$value.path}}'
+${{/each}}
+export default {
+  name: '${{"Dialog" + apiConfig.nameHump}}',
+  components: {
+    ${{each _CusPluginsList_}}${{$value.name}}${{if $index < _CusPluginsList_.length - 1}},${{/if}}${{/each}}
+  },
+  data () {
+    return {
+      dialogVisible: false,
+      claForm: {
+        ${{include 'base/base-form-item-value.art' }}
+      },
+      ${{if _ValidationList_.length}}
+        rules:{
+          ${{include 'base/base-form-rule.art' _ValidationList_}}
+        },
+      ${{/if}}
+      /* 组件数据源 */
+      ${{include 'base/base-plugins-data-source.art' }}
+      
+    }
+  },
+  computed: {},
+  watch: {},
+  mounted () {},
+  created () {},
+  methods: {
+    resetForm () {
+      this.$refs.claFrom.resetFields()
+    },
+    submitForm() {
+      this.$refs.claFrom.validate((valid) => {
+        if (valid) {
+          const _data = {
+            ...this.claForm
+          }
+          ${{apiConfig.name}}(_data).then(res => {
+            ${{if tableData[0] && tableData[0].column === null }} // ${{@ tableData[0].columnType}}  ${{@ tableData[0].other}}  ${{/if}}
+            console.log(res)
+
+          }).catch(() => {})
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    // 弹窗关闭后回调，要求重置数据状态及表单验证状态
+    closeFn () {
+      let oldData = this.$options.data()
+      this.claForm = oldData.claForm
+      this.resetForm()
+    },
+    show (param) {
+      this.dialogVisible = true
+      console.log('init-show: ', param)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped></style>

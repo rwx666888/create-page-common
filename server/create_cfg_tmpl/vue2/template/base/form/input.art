@@ -1,0 +1,19 @@
+<el-input
+  ${{if columnType == 'integer'}} v-model.number="claForm.${{column}}" ${{else}} v-model.trim="claForm.${{column}}" ${{/if}}
+  placeholder="${{label}}"
+  style="width:120px;"
+  ${{@ opts.attr | getFormItemAttr}}
+>
+${{if opts.attr?._prependType_ == 'text'}}
+<template slot="prepend">${{opts.attr._prependVal_ || 'text'}}</template>
+${{/if}}
+${{if opts.attr?._prependType_ == 'btnIcon'}}
+<el-button slot="prepend" icon="${{opts.attr._prependVal_ || 'el-icon-search'}}"></el-button>
+${{/if}}
+${{if opts.attr?._appendType_ == 'text'}}
+<template slot="append">${{opts.attr._appendVal_ || 'text'}}</template>
+${{/if}}
+${{if opts.attr?._appendType_ == 'btnIcon'}}
+<el-button slot="append" icon="${{opts.attr._appendVal_ || 'el-icon-search'}}"></el-button>
+${{/if}}
+</el-input>

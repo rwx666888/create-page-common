@@ -1,0 +1,7 @@
+${{each formData}} 
+${{if $value.isShow}}
+<el-form-item prop="${{$value.column}}" label="${{$value.label}}">
+  ${{include './form/'+$value.formItemType+'.art' $value}}
+</el-form-item>
+${{/if}}
+${{/each}}

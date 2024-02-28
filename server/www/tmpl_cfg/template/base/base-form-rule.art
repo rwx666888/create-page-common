@@ -1,0 +1,3 @@
+${{each $data}} 
+${{$value.column}}:${{@ $value.ruleStr}},
+${{/each}}
