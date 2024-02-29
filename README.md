@@ -1,4 +1,4 @@
-# create-page-catalog
+# create-page-common
 
 #### 介绍
 通过swagger文档创建页面
@@ -7,14 +7,14 @@
 
 1.  克隆或下载项目
 ```
-https://gitee.com/rwx666888/create-page-catalog/repository/archive/dev.zip
+https://gitee.com/rwx666888/create-page-common/repository/archive/dev.zip
 或
-git clone https://gitee.com/rwx666888/create-page-catalog.git
+git clone https://gitee.com/rwx666888/create-page-common.git
 ```
-2.  进入目录 create-page-catalog/server; 初始化项目
+2.  进入目录 create-page-common/server; 初始化项目
 ```
 // 进入目录
-cd create-page-catalog/server
+cd create-page-common/server
 // 初始化项目
 npm i
 ```
