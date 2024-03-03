@@ -60,9 +60,9 @@ npm run vue2
 > 列表项 -> 显示：设置是否在列表中显示该字段；
 
 ## 配置
-> 配置文件在 server/create_cfg_tmpl/**/config/ 目录下; 
+> 配置文件在 server/create_cfg_tmpl/**/config/ 目录下; 模板文件在server/create_cfg_tmpl/**/template/ 目录下;
 
-> <font color="red">注意：修改配置文件后，需要在 server 目录下重启 npm run vue2 服务；并且刷新页面（ctrl + F5, 强制刷新浏览器缓存，或开启开发者模式中的禁用缓存）才能生效；</font>
+> <font color="red">注意：修改配置文件后，需要在 server 目录下重启 npm run vue2 服务；并且刷新页面（ctrl + F5, 强制刷新浏览器缓存，或开启开发者模式中的禁用缓存）才能生效；</font> 如只修改模板，则即时生效；
 
 > 注意：web-project/public/tmpl_cfg 及 server/www/tmpl_cfg 目录下的配置文件及模板均为临时文件，修改无效，npm run xx 启动时，这部分会被server/create_cfg_tmpl 中与 xx 匹配的文件完全覆盖；
 
