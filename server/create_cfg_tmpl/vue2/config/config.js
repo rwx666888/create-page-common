@@ -7,7 +7,8 @@ const _$cusConfig$_ = {
     isMakeView: true, // 是否生成视图文件
     isMakeApi: true, // 是否生成api文件
     isMakeRouter: true, // 是否生成路由文件
-    isMakeMock: false // 是否生成mock数据文件
+    isMakeMock: false, // 是否生成mock数据文件
+    useRouterGroup: false // 是否启用路由分组，启用后，将会生成子路由文件，例如：src/router/park/user.js ,存储路径由 template.routerFile.savePath 决定, 文件后缀名始终与主路由文件一致
   },
   /**
    * 缓存配置
@@ -31,8 +32,7 @@ const _$cusConfig$_ = {
     apisFilePath: 'src/apis', // api文件目录
     httpFile: '@/apis/request.js', // 网络请求库，例如 axios；必须 export 导出 （post get del put）方法
     routerFile: 'src/router/index.js', // 路由文件
-    routerMatchMark: '@/views/', // 路由文件中路由匹配标记, 可匹配路由文件中 component: () => import('@/views/icons/index'), 的 @/views/部分，
-    useRouterGroup: false // 是否启用路由分组，启用后，将会在路由文件中生成分组路由文件，例如：src/router/park/user.js ,存储路径由 template.routerFile.savePath 决定, 文件后缀名始终与主路由文件一致
+    routerMatchMark: '@/views/' // 路由文件中路由匹配标记, 可匹配路由文件中 component: () => import('@/views/icons/index'), 的 @/views/部分，
   },
   // 生成文件的配置, 其中base开头的为基础模板配置，不可修改属性名称
   template: {
@@ -40,41 +40,41 @@ const _$cusConfig$_ = {
       savePath: 'src/views', // 生成的位置目录 相对于项目根目录的路径， 例如： src/views
       suffix: '-list',
       dirSuffix: '-page', // 视图目录后缀连接词, 例如 /user-page
-      template: 'page/list-page.art' // 模板名称 相对于 /art-template 目录
+      template: 'page/list-page.art' // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
     },
     infoPage: { // 详情页
       savePath: 'src/views', // 生成的位置目录 相对于项目根目录的路径， 例如： src/views
       suffix: '-info',
       dirSuffix: '-page', // 视图目录后缀连接词, 例如 /user-page
-      template: 'page/info-page.art' // 模板名称 相对于 /art-template 目录
+      template: 'page/info-page.art' // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
     },
     infoDialog: { // 详情页弹窗 dialog
       savePath: 'src/components', // 生成的位置目录 相对于项目根目录的路径， 例如： src/views
       suffix: '-info-dialog',
       dirSuffix: '', // 视图目录后缀连接词, 例如 /user-page
-      template: 'dialog/base-info.art' // 模板名称 相对于 /art-template 目录
+      template: 'dialog/base-info.art' // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
     },
     formPage: { // 表单页
       savePath: 'src/views', // 生成的位置目录 相对于项目根目录的路径， 例如： src/views
       suffix: '-form',
       dirSuffix: '-page', // 视图目录后缀连接词, 例如 /user-page
-      template: 'page/form-page.art' // 模板名称 相对于 /art-template 目录
+      template: 'page/form-page.art' // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
     },
     formDialog: { // 表单页弹窗 dialog
       savePath: 'src/components', // 生成的位置目录 相对于项目根目录的路径， 例如： src/components
       suffix: '-form-dialog',
       dirSuffix: '', // 视图目录后缀连接词, 例如 /user-page
-      template: 'dialog/base-form.art' // 模板名称 相对于 /art-template 目录
+      template: 'dialog/base-form.art' // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
     },
     routerFile: { // 路由文件；名称不可修改; 暂不支持外部多路由文件，只支持单路由文件，也不支持路由的命名视图、动态加载等
-      template: 'base/base-router.art', // 模板名称 相对于 /art-template 目录
+      template: 'base/base-router.art', // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
       templateLayout: 'base/base-router-layout.art',
       savePath: './park' // 路由分组文件保存目录，相对于主路由文件的路径 ，例如 projectPath.routerFile， 仅当 projectPath.useRouterGroup 为true时生效
     },
     baseMockData: { // mock数据 baseMockData 名称不可修改
       savePath: 'mock/json', // 生成的位置目录 相对于项目根目录 /mock/json/data
-      templateLayout: 'base/base-mock-layout.art', // 模板名称 相对于 /art-template 目录
-      template: 'base/base-mock-item.art' // 模板名称 相对于 /art-template 目录
+      templateLayout: 'base/base-mock-layout.art', // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
+      template: 'base/base-mock-item.art' // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
     }
   },
   // mock数据配置
