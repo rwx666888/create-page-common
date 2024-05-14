@@ -1,39 +1,45 @@
 # 基于 swagger 的 VUE 代码生成器
 
-根据 Swagger 文档定义，自动生成视图页面、API、路由、mock等。新页面可热更新直接运行。根据目标项目根目录（工作空间）中的 ESLint 环境配置信息，对文件进行 --fix 修复，保障文件代码格式与目标项目统一。
+根据 Swagger 文档定义，自动生成视图页面、API、路由、mock 等。新页面可热更新直接运行。根据目标项目根目录（工作空间）中的 ESLint 环境配置信息，对文件进行 --fix 修复，保障文件代码格式与目标项目统一。
 
 ## 主要功能
-* 支持 Swagger 文件数据及目标项目数据离线缓存，无需重复初始化项目；
-* 支持按需自动注入、注册自定义组件；
-* API文件支持按需增量更新，自动按需引入依赖函数，no never-used; （Tips:需框架及配套组件支持）
-* 路由文件支持新增一级路由，自动合并二级路由（依据swagger tag 分组）；开启路由分组后支持将路由按tag分割成子路由文件；（Tips:目前仅适配了vue的路由模式）
-* 采用 art-template 字符串模板引擎，简单易用，并使用自定义规则解决与 Vue、ES5 模板语法冲突问题； 
-* 支持自动匹配列名与列描述信息，并根据字段类型尝试自动匹配input-form-item
-* 支持自定义模板与模板数据（内置多种常用数据及格式）；支持配置默认模板；（Tips:需框架及配套组件支持）
-* 支持配置同名文件存在时，自动覆盖或跳过，默认页面文件自动覆盖，路由及 API 自动跳过；
-* 支持配置自动生成的页面、目录、API 的文件名后缀连接符，例如：列表页默认为 filename-[list].vue，并且默认过滤文件名中的 (^query|list$)（可选，强迫症患者福音）
-* 支持配置列表字段默认对齐方式，默认数值型居中，其它类型居左；
-* 支持配置表单元素在各类型模板中是否可用【boolean | 正则：'list|form'】
-* 支持字典数据（Tips:需框架及配套组件支持）；
-* 支持设置不参与用户交互的参数列表，例如：每页条数，当前页码等；
-* 支持自动识别匹配复合组件，例如双日历组件 data[Time]Range，同时支持手动配置，并高亮显示匹配关系；（Tips:其中包含配套的自定义组件）
+
+- 支持 Swagger 文件数据及目标项目数据离线缓存，无需重复初始化项目；
+- 支持按需自动注入、注册自定义组件；
+- API 文件支持按需增量更新，自动按需引入依赖函数，no never-used; （Tips:需框架及配套组件支持）
+- 路由文件支持新增一级路由，自动合并二级路由（依据 swagger tag 分组）；开启路由分组后支持将路由按 tag 分割成子路由文件；（Tips:目前仅适配了 vue 的路由模式）
+- 采用 art-template 字符串模板引擎，简单易用，并使用自定义规则解决与 Vue、ES5 模板语法冲突问题；
+- 支持自动匹配列名与列描述信息，并根据字段类型尝试自动匹配 input-form-item
+- 支持自定义模板与模板数据（内置多种常用数据及格式）；支持配置默认模板；（Tips:需框架及配套组件支持）
+- 支持配置同名文件存在时，自动覆盖或跳过，默认页面文件自动覆盖，路由及 API 自动跳过；
+- 支持配置自动生成的页面、目录、API 的文件名后缀连接符，例如：列表页默认为 filename-[list].vue，并且默认过滤文件名中的 (^query|list$)（可选，强迫症患者福音）
+- 支持配置列表字段默认对齐方式，默认数值型居中，其它类型居左；
+- 支持配置表单元素在各类型模板中是否可用【boolean | 正则：'list|form'】
+- 支持字典数据（Tips:需框架及配套组件支持）；
+- 支持设置不参与用户交互的参数列表，例如：每页条数，当前页码等；
+- 支持自动识别匹配复合组件，例如双日历组件 data[Time]Range，同时支持手动配置，并高亮显示匹配关系；（Tips:其中包含配套的自定义组件）
 
 ## 安装说明
 
 1.  克隆或下载项目
+
 ```
 https://gitee.com/rwx666888/create-page-common/repository/archive/dev.zip
 或
 git clone https://gitee.com/rwx666888/create-page-common.git
 ```
+
 2.  进入目录 create-page-common/server; 初始化项目
+
 ```
 // 进入目录
 cd create-page-common/server
 // 初始化项目
 npm i
 ```
+
 3. 启动服务，访问地址查看控制台输出，默认为： localhost:3000
+
 ```
 npm run vue2
 ```
@@ -42,16 +48,16 @@ npm run vue2
 
 [开发文档](./web-project/README.md)
 <br>
-[体验demo](https://lianglei.site/)
+[体验 demo](https://lianglei.site/)
 
 1. 初始化项目
-填写swagger或catalog项目地址（格式如下图）、和本地目标项目根路径；初始化项目，成功后返回项目及接口信息，检查信息是否有误！
-![初始化项目](./static/readme-imgs/img-01.png)
+   填写 swagger 或 catalog 项目地址（格式如下图）、和本地目标项目根路径；初始化项目，成功后返回项目及接口信息，检查信息是否有误！
+   ![初始化项目](./static/readme-imgs/img-01.png)
 2. 生成页面
-选择需要生成的页面对应的接口API，按需修改下方配置项目后，点击【生成】按钮，批量生成相关页面；如果目标项目服务已启动，此时可直接访问新页面；
-![初始化项目](./static/readme-imgs/img-02.png)
+   选择需要生成的页面对应的接口 API，按需修改下方配置项目后，点击【生成】按钮，批量生成相关页面；如果目标项目服务已启动，此时可直接访问新页面；
+   ![初始化项目](./static/readme-imgs/img-02.png)
 
-> Tips: 列表API下拉框中只展示包含list的API;
+> Tips: 列表 API 下拉框中只展示包含 list 的 API;
 
 > 拖动检索条件、列表项区域中的图标（ <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAbCAMAAABY1h8eAAAAXVBMVEX///9hd6nf/////+CldmaMwv//wpD/+92vgW+UyfFpZHbc+//wwpD//ez0//+Uzf+23fue1Pv7+PiXyfHd3u3/9M6oqc7wya/cv5CAjZDmrH+1iX1gZHaldm1jZGgFhtL6AAAAV0lEQVQoz83JNw6AMBAAwQOTDJic0/+fyUku0VJ72pGQzUvDmUWxO0dOk1z2J/fScqa1Lqbocur2nLJ2mB9HVHHmhS6kX0i/G6buw6mLqdwk5m6FDRKyF3HYA3KKOHIvAAAAAElFTkSuQmCC" style="vertical-align: middle;"/>），可改变字段显示顺序；
 
@@ -62,11 +68,12 @@ npm run vue2
 ## 配置
 > 配置文件在 server/create_cfg_tmpl/**/config/ 目录下; 模板文件在server/create_cfg_tmpl/**/template/ 目录下;
 
-> <font color="red">注意：修改配置文件后，需要在 server 目录下重启 npm run vue2 服务；并且刷新页面（ctrl + F5, 强制刷新浏览器缓存，或开启开发者模式中的禁用缓存）才能生效；</font> 如只修改模板，则即时生效；
+> <font color="red">注意：修改配置文件后，需要在 server 目录下重启 npm run vue2 服务；并且刷新页面（ctrl + F5, 强制刷新浏览器缓存，或开启开发者模式中的禁用缓存）才能生效；</font>
 
-> 注意：web-project/public/tmpl_cfg 及 server/www/tmpl_cfg 目录下的配置文件及模板均为临时文件，修改无效，npm run xx 启动时，这部分会被server/create_cfg_tmpl 中与 xx 匹配的文件完全覆盖；
+> 注意：web-project/public/tmpl_cfg 及 server/www/tmpl_cfg 目录下的配置文件及模板均为临时文件，修改无效，npm run xx 启动时，这部分会被 server/create_cfg_tmpl 中与 xx 匹配的文件完全覆盖；
 
-以下为配置文件部分示例，详细请查看 server/create_cfg_tmpl/**/config/config.js 
+以下为配置文件部分示例，详细请查看 server/create_cfg_tmpl/\*\*/config/config.js
+
 ```
 {
   // 分页参数，例如每页条数，当前页码等非用户输入的参数
@@ -235,22 +242,25 @@ npm run vue2
 ```
 
 ## 预设模板变量
-> 模板文件在 server/create_cfg_tmpl 目录下; 注意：web-project/public/tmpl_cfg 及 server/www/tmpl_cfg 目录下的模板均为临时文件，修改无效，npm run xx 启动时，这部分会被server/create_cfg_tmpl 中与 xx 匹配的文件完全覆盖；
+
+> 模板文件在 server/create_cfg_tmpl 目录下; 注意：web-project/public/tmpl_cfg 及 server/www/tmpl_cfg 目录下的模板均为临时文件，修改无效，npm run xx 启动时，这部分会被 server/create_cfg_tmpl 中与 xx 匹配的文件完全覆盖；
 
 > 预设模板变量不可直接修改，只能扩展，或通过配置文件修改；
+
 ### 路由
+
 ```
-{ 
-  path: '/${{lever1Path}}', 
-  component: Layout, 
+{
+  path: '/${{lever1Path}}',
+  component: Layout,
   name:'${{lever1RouterName}}',
-  meta: { 
-    title: '${{lever1PageName}}', 
+  meta: {
+    title: '${{lever1PageName}}',
     icon: 'el-icon-orange',
-    code: '' // 设置code即可启用权限控制 
-  }, 
-  redirect: '${{lever2Path}}', 
-  children: [ 
+    code: '' // 设置code即可启用权限控制
+  },
+  redirect: '${{lever2Path}}',
+  children: [
     {
       path: '${{lever2Path}}',
       component: () => import('@/views/${{filePath}}'),
@@ -260,7 +270,9 @@ npm run vue2
   ]
 }
 ```
+
 ### API (内置方法，API、路由与页面生成均依赖此对象)
+
 ```
 {
   name, // api名称
@@ -275,7 +287,9 @@ npm run vue2
   fileDesc // API 所属分组的描述
 }
 ```
+
 ### 页面
+
 ```
 {
   rootPath, // 项目根路径
@@ -293,12 +307,12 @@ npm run vue2
       labelDesc, // 字段描述 示例：用户名，英文字母
       columnType, // 类型  string|integer|array
       formItemType, // 表单元素类型 input|dataPicker 对应配置文件中 formItemOpts
-      range: { // 默认： null , 仅当是双日历表单组件时返回  
+      range: { // 默认： null , 仅当是双日历表单组件时返回
         f_: '__DateTime', // 所执行的自动匹配模式 ，注意仅 'startDateTime' 与 'endDateTime' 可自动匹配为 '__DateTime'；'startDateTime' 与 'dateTimeEnd' 不会自动匹配
         to_: 'endDateTime', // 自动匹配到的对象列名称
         isDatePickerRange: 'true|false', // 是否是双日历
         isStart: 'true|false' // 是否是start 否则为end
-      } 
+      }
     }
   ],
   tableData: [ // 列表项
@@ -317,10 +331,12 @@ npm run vue2
     showFormRightBtns: false // 显示表单右侧按钮区域
     。。。
   },
-  apiConfig, // 参照 模板预设变量中 《API》的说明 
+  apiConfig, // 参照 模板预设变量中 《API》的说明
 }
 ```
+
 ### 表单元素配置
+
 ```
 1、支持表单验证（validate）
 2、部分组件支持自定义配置；详见目录 server/create_cfg_tmpl/vue2/template/base/form; 可自行修改或扩展，注意文件名称必须与 config.js 中 formItemOpts 声明的属性匹配；
@@ -391,6 +407,7 @@ ${{/if}}
 #### 生成 mock 文件
 > 有接口的请忽略，默认也未开启; 配置路径：config.js -> makeFile -> isMakeMock (是否生成mock数据文件)<br>
 > 参照 server/create_cfg_tmpl/vue2/template/base/base-mock-item.art
+##### webpack
 ```
 {
   url: '${{apiConfig.uri | getMockRouterUrl}}',
@@ -405,6 +422,32 @@ ${{/if}}
     }
 
     return demo.demoFnMakeListPageData('${{apiConfig.name}}', config.query)
+  }
+}
+```
+##### vite + vite-plugin-mock
+兼容多选参数的解析
+```
+{
+  url: '${{apiConfig.uri | getMockRouterUrl}}',
+  type: '${{apiConfig.type}}',
+  response: config => {
+    if (!demo.__cacheKey__['${{apiConfig.name}}']) {
+      const tobj = {
+        ${{@ tableData | getMockRouterResData}}
+      }
+      demo.demoFnGetTheListKey(tobj)
+      demo.__cacheKey__['${{apiConfig.name}}'] = { ...tobj }
+    }
+    const _formData = Object.assign({}, config.body, config.query, config.params)
+    Object.keys(_formData).forEach((key) => {
+      if (key.endsWith('[]')) {
+        const newKey = key.slice(0, -2)
+        _formData[newKey] = Array.isArray(_formData[key]) ? _formData[key] : [_formData[key]]
+        delete _formData[key]
+      }
+    })
+    return demo.demoFnMakeListPageData('${{apiConfig.name}}', _formData)
   }
 }
 ```

@@ -459,3 +459,35 @@ export function getCusComptByFormItemType (formItemType) {
   const n_ = 'Set' + (formItemType.charAt(0).toUpperCase() + formItemType.slice(1))
   return _$cusComponents$_[n_] || null
 }
+
+/**
+ * 判断表单元素是否禁用
+ * @param {String} filterStr 过滤字符串 boolean | undefined | RegExp
+ * @param {String} mode 模式 (例如：'list', 'form')
+ * @returns {Boolean} 是否过滤
+ */
+export function getFormItemOptsIsDisabled (filterStr, mode = '') {
+  // return typeof filterStr === 'undefined' ? false : (typeof filterStr === 'string' ? (new RegExp('^(' + filterStr + ')$').test(mode)) : !!filterStr)
+  if (typeof filterStr === 'undefined') { return false }
+
+  if (typeof filterStr === 'string') {
+    if (mode === '') {
+      return false
+    }
+    const negate = filterStr.startsWith('!')
+    const regexStr = negate ? filterStr.substring(1) : filterStr
+    const regex = new RegExp('^(' + regexStr + ')$')
+    return negate ? !regex.test(mode) : regex.test(mode)
+  }
+  return !!filterStr
+}
+
+export function getFormItemOpts (formItemOpts, mode = '') {
+  return formItemOpts.map(item => {
+    return {
+      value: item.value,
+      label: item.label,
+      disabled: getFormItemOptsIsDisabled(item.disabled, mode)
+    }
+  })
+}

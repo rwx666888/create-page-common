@@ -283,6 +283,36 @@ export default {
         }
         row.isShow = true
       }
+    },
+    /**
+     * 选择组件类型
+     * 【内置钩子，静态工具类】注意不能修改 row 的值
+     * @param {object} row 当前操作行的数据
+     * @param {object} other 其它参数
+     * @return {number | null} 返回值为null则不做任何操作，返回值为数字则代表匹配优先级，数字越大优先级越高
+     */
+    __formItemTypeChoice (row, other = {}) {
+      if (!config_.formFieldDetection.findDate) {
+        return null
+      }
+      const name_ = row.name || ''
+      if (/(date|time)/i.test(name_) && other.rangeObj[name_] && other.rangeObj[name_].isDatePickerRange) { // 日期范围
+        return 5
+      }
+      return null
+    },
+    /**
+     * 验证方法
+     * 验证组件配置信息是否有效
+     * @param {Object} row 当前操作行的数据, 禁止修改
+     * @param {Array} tableDataSearch 当前视图的数据, 禁止修改
+     * @return {Boolean} 返回 false 则验证不通过
+     */
+    __validationFn (row, tableDataSearch = []) {
+      if (!row.opts.range) {
+        this.$alert(`字段【${row.column}】未指定【开始时间或结束时间】`, '错误')
+        return false
+      }
     }
   }
 }

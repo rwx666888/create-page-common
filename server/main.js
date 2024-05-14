@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, './www')))
 
 
 // 启动 Express 服务器
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8800
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`)
 })

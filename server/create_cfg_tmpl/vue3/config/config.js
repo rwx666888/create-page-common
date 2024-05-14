@@ -33,8 +33,8 @@ const _$cusConfig$_ = {
      * 网络请求库文件路径，例如 '@/apis/request.js' 或 '@/apis/request.ts' 根据项目配置自行调整，包括是否省略后缀名
      * 注意其内部 必须 export 导出 （post get del put）方法，
      */
-    httpFile: '@/apis/request.js', // 网络请求库，例如 axios；必须 export 导出 （post get del put）方法
-    routerFile: 'src/router/index.js', // 路由文件
+    httpFile: '@/apis/request', 
+    routerFile: 'src/router/index.ts', // 主路由文件
     routerMatchMark: '@/views/' // 路由文件中路由匹配标记, 可匹配路由文件中 component: () => import('@/views/icons/index'), 的 @/views/部分，
   },
   // 生成文件的配置, 其中base开头的为基础模板配置，不可修改属性名称
@@ -73,18 +73,18 @@ const _$cusConfig$_ = {
       template: 'base/base-router.art', // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
       templateLayout: 'base/base-router-layout.art',
       savePath: './park', // 路由分组文件保存目录，相对于主路由文件的路径 ，例如 projectPath.routerFile， 仅当 projectPath.useRouterGroup 为true时生效
-      routerNodeNames: [ 'asyncRoutes' ] // 路由节点名称，在主路由文件中，用于匹配路由节点；如果为空，则也不会生成路由文件
+      routerNodeNames: [ 'constantRoutes' ] // 路由节点名称，在主路由文件中，用于匹配路由节点；如果为空，则也不会生成路由文件
     },
     baseMockData: { // mock数据 baseMockData 名称不可修改
-      savePath: 'mock/json', // 生成的位置目录 相对于项目根目录 /mock/json/data
+      savePath: 'mock', // 生成的位置目录 相对于项目根目录 例如：mock
       templateLayout: 'base/base-mock-layout.art', // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
       template: 'base/base-mock-item.art', // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
-      ext: '.js' // 生成文件的后缀名, 例如：.js
+      ext: '.ts' // 生成文件的后缀名, 例如：.js
     },
     apisFile: { // api文件 apisFile 名称不可修改
       savePath: 'src/apis', // 生成的位置目录 相对于项目根目录 例如： src/apis
       template: 'base/base-apis.art', // 模板名称 相对于 /create_cfg_tmpl/*/template 目录
-      ext: '.js' // 生成文件的后缀名, 例如：.js
+      ext: '.ts' // 生成文件的后缀名, 例如：.js
     }
   },
   // mock数据配置
@@ -231,6 +231,7 @@ const _$cusConfig$_ = {
       value: 'cusDatePicker',
       label: '日期选择器（双）',
       path: '@/components/cusDatePicker/index.vue',
+      disabled: true,
       valid: {
         trigger: 'change',
         type: 'date'

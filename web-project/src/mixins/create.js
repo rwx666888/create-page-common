@@ -1,7 +1,7 @@
 
 import { dbGet, addOrUpdateData, getDataByProjectApiVersion, delByProjectApiNotVer } from '@/utils/db.js'
 import Sortable from 'sortablejs'
-import { isEmptyObject, _getInitAttrOfComp, getCusComptByFormItemType } from '@/utils/index.js'
+import { isEmptyObject, _getInitAttrOfComp, getCusComptByFormItemType, getFormItemOpts } from '@/utils/index.js'
 
 const com_ = require('create-vue-page-npm').createApi
 const config_ = _$cusConfig$_
@@ -13,7 +13,9 @@ export default {
       curApi: null,
       apiOpts: [],
       // 表单元素类型
-      formItemOpts: config_.formItemOpts,
+      formItemOpts: getFormItemOpts(config_.formItemOpts, ''),
+      // 当模式下所有可用的表单元素类型
+      formItemsCanUsed: [],
       tableData: [],
       tableDataSearch: [],
       // url中的参数
@@ -39,8 +41,15 @@ export default {
       localProjectPath: '', // 本地项目路径
       curApiVersion: '', // API 文档版本
       msgCache: [],
-      isFilterTheList: false // 是否过滤列表
+      isFilterTheList: true // 是否过滤列表
     }
+  },
+  created () {
+    this.formItemsCanUsed = this.formItemOpts.filter(f => {
+      return !f.disabled
+    }).map(m => {
+      return m.value
+    })
   },
   methods: {
     initData (fn = (item) => true) {
@@ -121,24 +130,21 @@ export default {
         this.theDateRangeObj = Old_.theDateRangeObj
       }
     },
-    filterOptsFn (filterStr, mode = '') {
-      return typeof filterStr === 'undefined' ? false : (typeof filterStr === 'string' ? (new RegExp('^(' + filterStr + ')$').test(mode)) : !!filterStr)
-    },
-    // 根据字段名称及类型尝试匹配表单元素类型
+    // 根据字段名称及类型尝试匹配表单元素类型，多个匹配时，优先级高的为准
     formItemTypeChoice (row) {
-      const name_ = row.name || ''
-      if (config_.formFieldDetection.findDate && /(date|time)/i.test(name_)) { // 日期或时间，优选日期
-        if (this.theDateRangeObj[name_] && this.theDateRangeObj[name_].isDatePickerRange) { // 双日历
-          return 'cusDatePicker'
-        } else {
-          return 'datePicker'
+      let tmpTargetNum = -1 // 优先级
+      let tmpTarget = 'input'
+      this.formItemsCanUsed.forEach(f => {
+        const _comp_ = getCusComptByFormItemType(f)
+        if (_comp_ && _comp_.methods.__formItemTypeChoice) {
+          const find_ = _comp_.methods.__formItemTypeChoice(row, { rangeObj: this.theDateRangeObj })
+          if (find_ && find_ > tmpTargetNum) {
+            tmpTargetNum = find_
+            tmpTarget = f
+          }
         }
-      }
-      if (config_.formFieldDetection.findArray && row.type === 'array') { // 数组，优选多选框
-        return 'select'
-      }
-
-      return 'input'
+      })
+      return tmpTarget
     },
     // 尝试过滤 label 名称
     filterColumnLable (str) {
@@ -270,11 +276,12 @@ export default {
         _autoInitFn_()
       }
     },
-    fnValidSearch (list) {
-      return !list.some(v => {
-        if (v.formItemType === 'cusDatePicker' && !v.opts.range) {
-          this.$alert(`字段【${v.column}】未指定【开始时间或结束时间】`, '错误')
-          return true
+    // 验证搜索表单配置项，验证通过返回 true
+    fnValidSearch () {
+      return !this.tableDataSearch.some(v => {
+        const _comp_ = getCusComptByFormItemType(v.formItemType)
+        if (_comp_ && _comp_.methods.__validationFn) {
+          return _comp_.methods.__validationFn(v, this.tableDataSearch) === false
         }
       })
     },

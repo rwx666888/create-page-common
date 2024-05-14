@@ -146,7 +146,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                :disabled="filterOptsFn(item.disabled, 'form')"
+                :disabled="item.disabled"
               />
             </el-select>
           </template>
@@ -171,6 +171,7 @@
 import { toCreatePage } from '@/apis/create-page.js'
 import DialogFormItemSetting from '@/views/create/dialog/dialog-form-item-setting.vue'
 import createMixin from '@/mixins/create.js'
+import { getFormItemOpts } from '@/utils/index.js'
 
 export default {
   name: 'CreateForm',
@@ -178,6 +179,11 @@ export default {
     DialogFormItemSetting
   },
   mixins: [createMixin],
+  data () {
+    return {
+      formItemOpts: getFormItemOpts(_$cusConfig$_.formItemOpts, 'form')
+    }
+  },
   computed: {},
   watch: {},
   mounted () {

@@ -131,6 +131,19 @@ export default {
      */
     __toResetFn (row, tableDataSearch = [], newFormItemType) {
 
+    },
+    /**
+     * 选择组件类型
+     */
+    __formItemTypeChoice (row, other = {}) {
+      if (!_$cusConfig$_.formFieldDetection.findDate) {
+        return null
+      }
+      const name_ = row.name || ''
+      if (/(date|time)/i.test(name_)) { // 日期
+        return 1
+      }
+      return null
     }
   }
 }

@@ -101,7 +101,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                :disabled="filterOptsFn(item.disabled, 'list')"
+                :disabled="item.disabled"
               />
             </el-select>
           </template>
@@ -195,6 +195,7 @@
 import { toCreatePage } from '@/apis/create-page.js'
 import DialogFormItemSetting from '@/views/create/dialog/dialog-form-item-setting.vue'
 import createMixin from '@/mixins/create.js'
+import { getFormItemOpts } from '@/utils/index.js'
 
 export default {
   name: 'CreateList',
@@ -204,6 +205,7 @@ export default {
   mixins: [createMixin],
   data () {
     return {
+      formItemOpts: getFormItemOpts(_$cusConfig$_.formItemOpts, 'list'),
       otherConfig: {
         showBtnCol: false, // 显示按钮列
         showNumCol: true, // 显示序号列

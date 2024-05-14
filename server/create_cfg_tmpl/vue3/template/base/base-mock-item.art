@@ -1,0 +1,62 @@
+${{if  templateType == 'listPage'}}
+{
+  url: '${{apiConfig.uri | getMockRouterUrl}}',
+  type: '${{apiConfig.type}}',
+  response: config => {
+    if (!demo.__cacheKey__['${{apiConfig.name}}']) {
+      const tobj = {
+        ${{@ tableData | getMockRouterResData}}
+      }
+      demo.demoFnGetTheListKey(tobj)
+      demo.__cacheKey__['${{apiConfig.name}}'] = { ...tobj }
+    }
+
+    const _formData = Object.assign({}, config.body, config.query, config.params)
+
+    Object.keys(_formData).forEach((key) => {
+
+      if (key.endsWith('[]')) {
+
+        const newKey = key.slice(0, -2)
+        _formData[newKey] = Array.isArray(_formData[key]) ? _formData[key] : [_formData[key]]
+        delete _formData[key]
+      }
+    })
+
+    return demo.demoFnMakeListPageData('${{apiConfig.name}}', _formData)
+  }
+}
+${{else if  templateType == 'infoPage' || templateType == 'infoDialog'}}
+{
+  url: '${{apiConfig.uri | getMockRouterUrl}}',
+  type: '${{apiConfig.type}}',
+  response: config => {
+    const tobj = {
+      ${{@ tableData | getMockRouterResData}}
+    }
+    demo.demoFnGetTheListKey(tobj)
+    return demo.demoFnMakeInfoPageData(tobj)
+  }
+}
+${{else if  templateType == 'formPage'}}
+{
+  url: '${{apiConfig.uri | getMockRouterUrl}}',
+  type: '${{apiConfig.type}}',
+  response: config => {
+    demo.demoFnEmpty()
+    ${{if tableData[0]}}
+      ${{if tableData[0].columnType === 'boolean'}}
+        return true
+      ${{else if tableData[0].columnType === 'object'}}
+        return {}
+      ${{else if tableData[0].columnType === 'array'}}
+        return []
+      ${{else}}
+        return tableData[0].other
+      ${{/if}}
+    ${{else}}
+      return ''
+    ${{/if}}
+  }
+}
+${{/if}}

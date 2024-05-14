@@ -1,0 +1,6 @@
+${{if _modelType == 'new'}}
+/* ${{apiConfig.fileDesc}} */
+import { ${{apiConfig.type}} } from '${{_httpFile}}'
+${{/if}}
+// ${{apiConfig.desc}}
+export const ${{apiConfig.name}} = (data?: object) => ${{apiConfig.type}}<any>(`${{_uri}}`, data)

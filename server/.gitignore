@@ -18,3 +18,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+# 忽略运行状态下的模板目录
+www/tmpl_cfg/*
+!www/tmpl_cfg/.gitkeep

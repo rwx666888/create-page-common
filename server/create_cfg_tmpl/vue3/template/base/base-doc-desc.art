@@ -1,0 +1,6 @@
+<!--
+ page: ${{apiConfig.desc}}
+ author: ${{$imports.comConfig.author || 'lianglei'}}
+ Tip: 模板引擎自动生成页面
+ template: [${{templateType}}][${{ $imports.comConfig.template[templateType].template }}] 
+ -->

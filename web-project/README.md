@@ -30,9 +30,10 @@ cd create-page-common/web-project
 ```
 npm i
 ```
-4. 启动项目
+
+4. 启动项目 参数[可选] target 用于指定应用的模板，默认为 vue2
 ```
-npm run local
+npm run local --target=vue2
 ```
 5. 编译项目
 ```

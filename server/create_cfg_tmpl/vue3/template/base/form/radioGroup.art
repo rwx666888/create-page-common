@@ -1,0 +1,16 @@
+<el-radio-group v-model="claForm.${{column}}">
+${{if opts.attr?._type_ == 'normal'}}
+  <el-radio 
+    v-for="item in ${{column}}Opts"
+    :key="item.value"
+    :label="item.label"
+  >${{item.value}}</el-radio>
+${{/if}}
+${{if opts.attr?._type_ == 'button'}}
+  <el-radio-button 
+    v-for="item in ${{column}}Opts"
+    :key="item.value"
+    :label="item.label"
+  >{{item.value}}</el-radio-button>
+${{/if}}
+</el-radio-group>

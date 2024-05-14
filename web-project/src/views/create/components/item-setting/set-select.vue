@@ -125,6 +125,18 @@ export default {
      */
     __toResetFn (row, tableDataSearch = [], newFormItemType) {
 
+    },
+    /**
+     * 选择组件类型
+     */
+    __formItemTypeChoice (row, other = {}) {
+      if (!_$cusConfig$_.formFieldDetection.findDate) {
+        return null
+      }
+      if (row.type === 'array') { // 数组，优选多选框
+        return 3
+      }
+      return null
     }
   }
 }

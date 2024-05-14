@@ -24,3 +24,6 @@ yarn.lock
 /tests/coverage/
 
 /bak
+# 忽略运行状态下的模板目录
+public/tmpl_cfg/*
+!public/tmpl_cfg/.gitkeep

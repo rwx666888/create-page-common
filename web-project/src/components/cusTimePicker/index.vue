@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'CusDatePicker',
+  name: 'CusTimePicker',
   inject: ['elForm'],
   props: {
     startKey: String,
