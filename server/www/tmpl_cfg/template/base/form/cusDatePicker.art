@@ -1,7 +1,0 @@
-<cus-date-picker
-  startKey="${{column}}"
-  endKey="${{opts.range.to_}}"
-  placeholder="${{label}}"
-  style="width:280px;"
-  ${{@ opts.attr | getFormItemAttr}}
-/>
