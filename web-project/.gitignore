@@ -24,6 +24,6 @@ yarn.lock
 /tests/coverage/
 
 /bak
-# ºöÂÔÔËĞĞ×´Ì¬ÏÂµÄÄ£°åÄ¿Â¼
+# å¿½ç•¥è¿è¡ŒçŠ¶æ€ä¸‹çš„æ¨¡æ¿ç›®å½•
 public/tmpl_cfg/*
 !public/tmpl_cfg/.gitkeep

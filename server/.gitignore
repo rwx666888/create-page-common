@@ -18,6 +18,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-# ºöÂÔÔËĞĞ×´Ì¬ÏÂµÄÄ£°åÄ¿Â¼
+
+# å¿½ç•¥è¿è¡ŒçŠ¶æ€ä¸‹çš„æ¨¡æ¿ç›®å½•
 www/tmpl_cfg/*
 !www/tmpl_cfg/.gitkeep
