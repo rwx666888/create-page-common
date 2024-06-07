@@ -12,7 +12,6 @@ NProgress.configure({
 
 ;(async function () {
   const accessRoutes = await store.dispatch('permission/generateRoutes')
-  console.log('ggg', accessRoutes)
   selfaddRoutes(accessRoutes)
 })()
 

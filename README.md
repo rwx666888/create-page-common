@@ -44,6 +44,9 @@ npm i
 npm run vue2
 ```
 
+启动脚本与模板对应关系
+> vue2 : vue2 + element-ui
+> vue3 : vue3 + element-plus
 ## 使用说明
 
 [开发文档](./web-project/README.md)

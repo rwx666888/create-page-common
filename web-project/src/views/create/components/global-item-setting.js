@@ -5,20 +5,39 @@
 
 const requireComponent = require.context(
   './item-setting',
-  false,
+  true,
   /set-[\w-]+\.vue$/
 )
 const tmp = {}
-requireComponent.keys().forEach((fileName) => { // fileName => "./set-cusDatePicker.vue"
-  const config_ = requireComponent(fileName)
-  const name_ = fileName
-    // Remove  filename "./"
-    .replace(/^\.\//, '')
-    // Remove 后缀名
-    .replace(/\.\w+$/, '')
-    .split('-')
-    // 转首字母大写
-    .map((item) => item.charAt(0).toUpperCase() + item.slice(1)).join('')
-  tmp[name_] = config_.default
+requireComponent.keys().forEach((path_) => { // fileName => "./set-cusDatePicker.vue"
+  // 提取分组名称部分 ./xxx/
+  const groupNameMatch = path_.match(/\.\/([^/]+)\//)
+  const groupName = groupNameMatch ? groupNameMatch[1] : null
+
+  if (groupName) {
+    // 提取最右侧的文件名并转换为大驼峰结构
+    const fileNameMatch = path_.match(/\/([^/]+)\.vue$/)
+    let fileName = fileNameMatch ? fileNameMatch[1] : null
+
+    if (fileName) {
+      fileName = fileName.split('-').map(item => item.charAt(0).toUpperCase() + item.slice(1)).join('')
+    }
+    if (!tmp[groupName]) {
+      tmp[groupName] = {}
+    }
+    const config_ = requireComponent(path_)
+    tmp[groupName][fileName] = config_.default
+  }
 })
-window._$cusComponents$_ = { ...tmp }
+console.log('tmp', tmp, _$cusConfig$_._UI_TEMP_PATH_)
+window._$cusComponents$_ = { ...tmp['_com'] }
+
+if (Array.isArray(_$cusConfig$_._UI_TEMP_PATH_)) {
+  _$cusConfig$_._UI_TEMP_PATH_.forEach(path => {
+    if (path) {
+      window._$cusComponents$_ = { ...window._$cusComponents$_, ...tmp[path] }
+    }
+  })
+} else {
+  window._$cusComponents$_ = { ...window._$cusComponents$_, ...tmp[_$cusConfig$_._UI_TEMP_PATH_ || 'vue2'] }
+}

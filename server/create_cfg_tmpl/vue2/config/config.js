@@ -1,4 +1,5 @@
 const _$cusConfig$_ = {
+  _UI_TEMP_PATH_: 'element-ui', // string | array, 当为数组时，后面的会覆盖前面的重名组件；UI模板路径，必须与 web-project\src\views\create\components\item-setting\ 下的文件夹名称一致
   // 分页参数，例如每页条数，当前页码等非用户输入的参数
   pageListParams: [
     'pageSize', 'currentPage'

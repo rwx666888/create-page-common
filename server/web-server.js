@@ -8,7 +8,6 @@ const apiPath = '/mockapi'
 const nodeFileApi = require('create-vue-page-npm').nodeFileApi
 
 
-console.log('comConfig_', comConfig_.author)
 // 初始化模板解析器
 nodeFileApi.initTemplate(template_, { ...comConfig_, _templateRoot_: path.join(__dirname, './www/tmpl_cfg/template')})
 

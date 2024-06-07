@@ -145,16 +145,23 @@ function demoFnMakeListPageData (key, query = {}) {
   const obj = __cacheKey__[key]
   const query_ = { ...query }
   // 过滤数据 去除分页参数 和 空值参数
-  const tmpParams = Object.keys(query_).filter(key => {
-    return ![
-      'currentPage', 'pageSize'
-    ].includes(key) && (query_[key] !== '' && query_[key] !== null && query_[key] !== undefined && (!Array.isArray(query_[key]) || query_[key].length > 0))
+  const tmpParams = Object.keys(query_).filter((key) => {
+    return (
+      !['currentPage', 'pageSize'].includes(key) &&
+      query_[key] !== '' &&
+      query_[key] !== null &&
+      query_[key] !== undefined &&
+      (!Array.isArray(query_[key]) || query_[key].length > 0)
+    )
   })
   console.log('tmpParams: ', tmpParams, query)
 
   // 过滤数据 模拟搜索
-  const mockList = demoList.filter((item, index) => {
-    return !tmpParams.some(key => {
+  const mockList = demoList.filter((item) => {
+    return !tmpParams.some((key) => {
+      if (!obj[key]) {
+        return false
+      }
       if (Array.isArray(query_[key])) {
         return !query_[key].includes(item[obj[key].target])
       } else {
@@ -163,16 +170,17 @@ function demoFnMakeListPageData (key, query = {}) {
     })
   })
 
-  const {
-    currentPage = 1, pageSize = 20
-  } = query_
-  const pageList = mockList.filter((item, index) => index < pageSize * currentPage && index >= pageSize * (currentPage - 1)).map(item => {
+  const { currentPage = 1, pageSize = 20 } = query_
+  const start_ = (currentPage - 1) * pageSize
+  const end_ = currentPage * pageSize
+  const pageList = mockList.slice(start_, end_).map((item) => {
     const tmp = {}
     for (const key in obj) {
       tmp[key] = item[obj[key].target]
     }
     return tmp
   })
+
   return {
     totalCount: mockList.length,
     list: pageList

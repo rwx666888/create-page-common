@@ -33,13 +33,11 @@
 </template>
 
 <script>
-import DataSourse from './part/dataSourse.vue'
+import DataSourse from '../../part/dataSourse.vue'
 
 export default {
-  name: 'SetCheckboxGroup',
-  components: {
-    DataSourse
-  },
+  name: 'SetRadioGroup',
+  components: { DataSourse },
   inject: ['itemSetIns'],
   data () {
     return {

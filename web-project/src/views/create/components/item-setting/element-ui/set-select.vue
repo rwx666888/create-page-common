@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import DataSourse from './part/dataSourse.vue'
+import DataSourse from '../../part/dataSourse.vue'
 
 export default {
   name: 'SetSelect',
@@ -128,6 +128,10 @@ export default {
     },
     /**
      * 选择组件类型
+     * 【内置钩子，静态工具类】注意不能修改 row 的值
+     * @param {object} row 当前操作行的数据
+     * @param {object} other 其它参数
+     * @return {number | null} 返回值为null则不做任何操作，返回值为数字则代表匹配优先级，数字越大优先级越高
      */
     __formItemTypeChoice (row, other = {}) {
       if (!_$cusConfig$_.formFieldDetection.findDate) {
