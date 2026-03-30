@@ -23,7 +23,10 @@ ${{if  templateType == 'listPage'}}
       }
     })
 
-    return demo.demoFnMakeListPageData('${{apiConfig.name}}', _formData)
+    return __fnWrapRes(
+      demo.demoFnMakeListPageData('${{apiConfig.name}}', _formData),
+      ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}}
+    )
   }
 }
 ${{else if  templateType == 'infoPage' || templateType == 'infoDialog'}}
@@ -35,7 +38,10 @@ ${{else if  templateType == 'infoPage' || templateType == 'infoDialog'}}
       ${{@ tableData | getMockRouterResData}}
     }
     demo.demoFnGetTheListKey(tobj)
-    return demo.demoFnMakeInfoPageData(tobj)
+    return __fnWrapRes(
+      demo.demoFnMakeInfoPageData(tobj),
+      ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}}
+    )
   }
 }
 ${{else if  templateType == 'formPage'}}
@@ -46,16 +52,16 @@ ${{else if  templateType == 'formPage'}}
     demo.demoFnEmpty()
     ${{if tableData[0]}}
       ${{if tableData[0].columnType === 'boolean'}}
-        return true
+        return __fnWrapRes(true, ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{else if tableData[0].columnType === 'object'}}
-        return {}
+        return __fnWrapRes({}, ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{else if tableData[0].columnType === 'array'}}
-        return []
+        return __fnWrapRes([], ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{else}}
-        return tableData[0].other
+        return __fnWrapRes(tableData[0].other, ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{/if}}
     ${{else}}
-      return ''
+      return __fnWrapRes('', ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
     ${{/if}}
   }
 }

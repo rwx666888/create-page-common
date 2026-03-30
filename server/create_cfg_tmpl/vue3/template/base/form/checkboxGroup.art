@@ -1,4 +1,4 @@
-<el-checkbox-group v-model="claForm.${{column}}">
+<el-checkbox-group v-model="claForm${{@ column | getFieldAccessExpr }}">
 ${{if opts.attr?._type_ == 'normal'}}
   <el-checkbox 
     v-for="item in ${{column}}Opts"

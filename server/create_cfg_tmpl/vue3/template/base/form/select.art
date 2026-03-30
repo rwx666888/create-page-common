@@ -1,5 +1,5 @@
 <el-select
-  v-model="claForm.${{column}}"
+  v-model="claForm${{@ column | getFieldAccessExpr }}"
   placeholder=""
   style="width:120px;"
   ${{@ opts.attr | getFormItemAttr}}

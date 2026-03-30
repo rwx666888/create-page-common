@@ -4,11 +4,18 @@ const _$cusConfig$_ = {
   pageListParams: [
     'pageSize', 'currentPage'
   ],
+  // API 响应模型配置, 用于解析 API 响应数据，提取其中的有效数据部分
+  responseModel: { 
+    hasWrapper: true, // [true|false] [必须] 是否有包装层，例如：{ code: 0, data: {}, msg: 'success' }
+    codeKey: 'code', // 状态码键名，hasWrapper为true时必填
+    dataKey: 'body', // 数据键名，hasWrapper为true时必填
+    msgKey: 'msg' // [可选] 提示消息键名
+  },
   makeFile: { // 生成文件的配置
     isMakeView: true, // 是否生成视图文件
     isMakeApi: true, // 是否生成api文件
     isMakeRouter: true, // 是否生成路由文件
-    isMakeMock: false, // 是否生成mock数据文件
+    isMakeMock: true, // 是否生成mock数据文件
     useRouterGroup: false // 是否启用路由分组，启用后，将会生成子路由文件，例如：src/router/park/user.js ,存储路径由 template.routerFile.savePath 决定, 文件后缀名始终与主路由文件一致
   },
   /**

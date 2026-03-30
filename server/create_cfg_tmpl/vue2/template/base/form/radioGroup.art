@@ -1,4 +1,4 @@
-<el-radio-group v-model="claForm.${{column}}">
+<el-radio-group v-model="claForm${{@ column | getFieldAccessExpr }}">
 ${{if opts.attr?._type_ == 'normal'}}
   <el-radio 
     v-for="item in ${{column}}Opts"

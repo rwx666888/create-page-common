@@ -1,4 +1,16 @@
 import demo from './data/example-data.js'
+
+// 响应体包装器
+const __fnWrapRes = function(data, enabled) {
+  if (!enabled) {
+    return data
+  }
+  return {
+    '${{$imports.comConfig.responseModel.codeKey || 'code'}}': 0,
+    '${{$imports.comConfig.responseModel.dataKey || 'data'}}': data,
+    '${{$imports.comConfig.responseModel.msgKey || 'msg'}}': 'success'
+  }
+}
 /**
  * 获取客户端传递过来的数值
  * config.param('name')，自动尝试从 config.params，config.body，config.query 中查询 name的valeu

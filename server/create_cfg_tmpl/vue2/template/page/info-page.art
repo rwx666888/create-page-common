@@ -35,6 +35,9 @@ export default {
     }
   },
   watch: {},
+  mounted () {
+    this.init()
+  },
   methods: {
     init () {
       ${{if formData.length}}

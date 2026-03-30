@@ -1,1 +1,1 @@
-<el-checkbox v-model="claForm.${{column}}">${{label}}</el-checkbox>
+<el-checkbox v-model="claForm${{@ column | getFieldAccessExpr }}">${{label}}</el-checkbox>

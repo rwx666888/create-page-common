@@ -2,5 +2,5 @@
   type="textarea"
   :rows="3"
   placeholder=""
-  v-model="claForm.${{column}}">
+  v-model="claForm${{@ column | getFieldAccessExpr }}">
 </el-input>

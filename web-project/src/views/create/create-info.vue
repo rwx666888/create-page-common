@@ -17,7 +17,10 @@
               :key="item.code"
               :label="item.label"
               :value="item.value"
-            />
+            >
+              <i v-if="item.docvalid && !item.docvalid.type" class="el-icon-warning-outline api-opt-warn" />
+              <span>{{ item.label }}</span>
+            </el-option>
           </el-select>
           <el-tooltip
             effect="dark"
@@ -248,6 +251,10 @@ export default {
 .js-handle {
   font-size: 18px;
   cursor: s-resize;
+}
+.api-opt-warn {
+  color: #e6a23c;
+  margin-right: 6px;
 }
 
 </style>

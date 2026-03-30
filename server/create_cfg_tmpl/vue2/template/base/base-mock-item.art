@@ -11,7 +11,22 @@ ${{if  templateType == 'listPage'}}
       demo.__cacheKey__['${{apiConfig.name}}'] = { ...tobj }
     }
 
-    return demo.demoFnMakeListPageData('${{apiConfig.name}}', Object.assign({}, config.body, config.query, config.params))
+    const _formData = Object.assign({}, config.body, config.query, config.params)
+
+    Object.keys(_formData).forEach((key) => {
+
+      if (key.endsWith('[]')) {
+
+        const newKey = key.slice(0, -2)
+        _formData[newKey] = Array.isArray(_formData[key]) ? _formData[key] : [_formData[key]]
+        delete _formData[key]
+      }
+    })
+
+    return __fnWrapRes(
+      demo.demoFnMakeListPageData('${{apiConfig.name}}', _formData),
+      ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}}
+    )
   }
 }
 ${{else if  templateType == 'infoPage' || templateType == 'infoDialog'}}
@@ -23,7 +38,10 @@ ${{else if  templateType == 'infoPage' || templateType == 'infoDialog'}}
       ${{@ tableData | getMockRouterResData}}
     }
     demo.demoFnGetTheListKey(tobj)
-    return demo.demoFnMakeInfoPageData(tobj)
+    return __fnWrapRes(
+      demo.demoFnMakeInfoPageData(tobj),
+      ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}}
+    )
   }
 }
 ${{else if  templateType == 'formPage'}}
@@ -34,16 +52,16 @@ ${{else if  templateType == 'formPage'}}
     demo.demoFnEmpty()
     ${{if tableData[0]}}
       ${{if tableData[0].columnType === 'boolean'}}
-        return true
+        return __fnWrapRes(true, ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{else if tableData[0].columnType === 'object'}}
-        return {}
+        return __fnWrapRes({}, ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{else if tableData[0].columnType === 'array'}}
-        return []
+        return __fnWrapRes([], ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{else}}
-        return tableData[0].other
+        return __fnWrapRes(tableData[0].other, ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
       ${{/if}}
     ${{else}}
-      return ''
+      return __fnWrapRes('', ${{if apiConfig.response.wrapper.enabled}}true${{else}}false${{/if}})
     ${{/if}}
   }
 }

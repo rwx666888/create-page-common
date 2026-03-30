@@ -23,7 +23,7 @@ instance.interceptors.request.use(config => {
     config.baseURL = process.env.VUE_APP_MOCK_SERVER
   }
 
-  console.log('http-request-config:', config)
+  // console.log('http-request-config:', config)
   const {
     token
   } = store.state.user

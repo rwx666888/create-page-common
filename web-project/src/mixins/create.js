@@ -62,7 +62,8 @@ export default {
               return {
                 value: v,
                 code: t_.name,
-                label: `【${t_.name}】${t_.summary} -- ${v}`
+                label: `【${t_.name}】${t_.summary} -- ${v}`,
+                docvalid: t_.docvalid || { type: true, msg: '' }
               }
             })
           this.tempCatalogData = val.items
@@ -305,15 +306,16 @@ export default {
         fileName: curTagCode.kebabCase, // API 所属分组 tags,连接符（-）格式，用于生成api文件的名称
         fileNameHump: curTagCode.pascalCase, // API 所属分组 tags, 大驼峰格式
         fileNameCamel: curTagCode.camelCase, // API 所属分组 tags, 小驼峰格式
-        fileDesc: obj_.tags.label // API 所属分组的描述
+        fileDesc: obj_.tags.label, // API 所属分组的描述
+        response: {
+          wrapper: obj_.res.wrapper
+        }
       }
     },
     // 构造tabledata
     _fnMakeTableData (obj_) {
       if (obj_.hasList) {
-        const list_ = obj_.res.body.filter(v => {
-          return v.type === 'array'
-        })[0].children
+        const list_ = obj_.res.listColumns
         return list_.map(n => {
           return {
             column: n.name,

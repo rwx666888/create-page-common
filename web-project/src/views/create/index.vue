@@ -68,6 +68,14 @@
         <el-form-item label="API版本:">
           <span class="sec-color">{{ projectInfo.version }}</span>
         </el-form-item>
+        <el-form-item label="接口列表:">
+          <el-button
+            type="warning"
+            plain
+            size="mini"
+            @click="toApiListPage"
+          >接口定义检查列表</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
 
@@ -105,6 +113,7 @@ import { isEmptyObject } from '@/utils/index.js'
 import { dbSet, dbDel, dbGet } from '@/utils/db.js'
 
 const com_ = require('create-vue-page-npm').createApi
+const config_ = _$cusConfig$_
 
 export default {
   name: 'CreateIndex',
@@ -114,7 +123,7 @@ export default {
       if (this.formData.docType === 'cUrl') {
         callback()
       } else {
-        console.log('--this.formData.cDoc', this.formData.cDoc)
+        // console.log('--this.formData.cDoc', this.formData.cDoc)
         if (com_.validSwaggerDoc(this.formData.cDoc)) {
           callback()
         } else {
@@ -186,11 +195,11 @@ export default {
                 if (typeof res === 'object') {
                   res = JSON.stringify(res)
                 }
-                data_ = com_.makeDataFn(res)
+                data_ = com_.makeDataFn(res, config_)
               }
             }
           } else {
-            data_ = com_.makeDataFn(this.formData.cDoc)
+            data_ = com_.makeDataFn(this.formData.cDoc, config_)
           }
           console.log('------', JSON.parse(JSON.stringify(data_)))
 
@@ -264,6 +273,9 @@ export default {
       this.$nextTick(_ => {
         this.$refs.ruleForm.validateField('cDocDesc')
       })
+    },
+    toApiListPage () {
+      this.$router.push({ name: 'CreateApiList' })
     }
   }
 }

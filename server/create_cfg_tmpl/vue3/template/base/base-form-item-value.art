@@ -1,2 +1,2 @@
-${{each formData}} ${{$value.column}}: ${{@ $value.columnType | getFormItemValue }} ${{if formData.length-1 != $index}},${{/if}} // ${{@ $value.label}}
+${{each formData}} ${{@ $value.column | getObjectKeyExpr}}: ${{@ $value.columnType | getFormItemValue }} ${{if formData.length-1 != $index}},${{/if}} // ${{@ $value.label}}
 ${{/each}}
