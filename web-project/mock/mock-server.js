@@ -66,7 +66,7 @@ function unregisterRoutes () {
 // for mock server
 const responseFake = (route) => {
   return {
-    url: new RegExp(`${process.env.VUE_APP_MOCK_SERVER}${route.url}`),
+    url: `${process.env.VUE_APP_MOCK_SERVER}${route.url}`,
     type: route.type || 'get',
     response (req, res) {
       // console.log('request invoke:' + req.path)
