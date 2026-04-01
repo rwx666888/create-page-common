@@ -3,4 +3,4 @@ ${{if _modelType == 'new'}}
 import { ${{apiConfig.type}} } from '${{_httpFile}}'
 ${{/if}}
 // ${{apiConfig.desc}}
-export const ${{apiConfig.name}} = (data) => ${{apiConfig.type}}(`${{_uri}}`, data)
+export const ${{apiConfig.name}} = (data) => ${{apiConfig.type}}(`${{_uri | replaceUriArg 'data'}}`, data)
